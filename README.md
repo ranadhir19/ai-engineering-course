@@ -37,30 +37,30 @@ Assistant and the Knowledge Service as tools of its own.
 
 - **1.01 The Toolkit: Python, JSON & HTTP** — a chat client and a mock
   model server, built from the standard library alone.
-- **1.02 Prompts, Messages and Roles** — system, user and assistant
-  turns, and what each one is actually for.
-- **1.03 Tokens, Context and Cost** — counting what you send, budgeting
-  a context window, reading usage numbers honestly.
-- **1.04 Structured Output** — asking for JSON, validating what comes
-  back, and repairing what does not parse.
-- **1.05 Errors, Retries and Timeouts** — a failure taxonomy for model
-  calls, and backoff that respects the server.
-- **1.06 Conversation Memory** — carrying state across turns without
-  losing the thread or the budget.
-- **1.07 Tool Calling Basics** — letting the model ask your code to do
-  things, safely.
-- **1.08 Retrieval over Your Inbox** — keyword search first, then
-  ranking, over the same three-email inbox grown up.
-- **1.09 Embeddings and Similarity** — vectors from scratch, and what
-  they buy over keywords.
-- **1.10 Evaluation Harnesses** — measuring an assistant with tests
-  instead of vibes.
-- **1.11 Keys, Privacy and Local-First Design** — secrets in the
-  environment, redaction in logs, and what never leaves the machine.
-- **1.12 The Inbox Assistant, Assembled** — every piece from the phase
-  in one small, honest program.
-- **Phase 1 Capstone — Inbox Assistant** — build the complete assistant
-  against a fresh inbox and a fresh failure harness, unaided.
+- **1.02 Models & Providers** — one interface over three providers,
+  switchable by config, with cost and latency measured per call.
+- **1.03 Tokens & Context Windows** — what a token is, why windows
+  fill, and a token counter and context budgeter inside the client.
+- **1.04 APIs, SDKs & Streaming** — when the SDK helps, when it hides
+  the thing that breaks, and streaming with a clean abort.
+- **1.05 Prompt Engineering** — instructions, examples and structure
+  as programming; a versioned prompt-template library.
+- **1.06 Context Engineering** — the context window as a workspace
+  you design: what earns a place in it, and what each inclusion costs.
+- **1.07 Temperature & Sampling** — what sampling does to a
+  distribution, measured on the Assistant's own tasks.
+- **1.08 Structured Outputs** — schemas as contracts, with
+  schema-validated extraction and a repair loop.
+- **1.09 Function Calling** — the model proposes, the code disposes:
+  real tools with full validation.
+- **1.10 Validation at the Boundary** — input sanitisation and output
+  checking as middleware around every model call.
+- **1.11 Prompt Injection & AI Security Basics** — the attack
+  classes, stated honestly, with tripwires on the middleware.
+- **1.12 Measure Everything: Cost, Latency, Testing & Logging** —
+  per-call instrumentation, a golden-set test runner, structured logs.
+- **Phase 1 Capstone — The Inbox Assistant, Finished** — the thread
+  application completed to a stated, checkable standard.
 
 Lessons for Phases 2 and 3 are added to this repository as the course
 reaches them.
@@ -87,7 +87,8 @@ From the repository root:
     python3 validate.py
 
 That compiles every Python file in the repository, checks each
-lesson folder's structure, and runs the lesson 1.01 failure harness
+lesson folder's structure, and runs the lesson exercise harnesses
+(1.01 failure harness, 1.02 routing harness)
 against the exercise solution client.
 
 To run one harness directly, from its lesson's exercise folder:
