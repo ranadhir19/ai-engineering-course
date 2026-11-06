@@ -89,7 +89,7 @@ From the repository root:
 That compiles every Python file in the repository, checks each
 lesson folder's structure, and runs the lesson exercise harnesses
 (1.01 failure harness, 1.02 routing harness, 1.03 budget harness,
-1.04 stream harness) against the exercise solutions.
+1.04 stream harness, 1.05 prompt harness) against the exercise solutions.
 
 To run one harness directly, from its lesson's exercise folder:
 
