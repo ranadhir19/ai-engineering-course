@@ -1,0 +1,532 @@
+{
+ "about": "Lesson 1.08 case set: 24 inbox emails, each with a gold triage record, the record the stand-in model intends (three named judgement errors: rec-07 label, rec-13 priority, rec-16 due), and the form defects the lab applies when serialising. Summaries are graded on the printed key phrase; all other fields exact.",
+ "schema": "record@1.0.0",
+ "cases": [
+  {
+   "id": "rec-01",
+   "email": "From: accounts@vendor.example — Invoice 114 is thirty days overdue. The payment run closes this Friday; if it misses the run it waits another month.",
+   "gold": {
+    "label": "action",
+    "priority": "high",
+    "summary": "Invoice 114 is thirty days overdue; the payment run closes Friday.",
+    "reply_needed": true,
+    "due": "2026-11-13"
+   },
+   "intended": {
+    "label": "action",
+    "priority": "high",
+    "summary": "Invoice 114 is thirty days overdue; the payment run closes Friday.",
+    "reply_needed": true,
+    "due": "2026-11-13"
+   },
+   "defects": [],
+   "summary_key": "invoice 114"
+  },
+  {
+   "id": "rec-02",
+   "email": "From: digest@product.example — Your November product digest: twelve features shipped, two deprecated. Unsubscribe at any time.",
+   "gold": {
+    "label": "archive",
+    "priority": "low",
+    "summary": "Monthly product digest newsletter.",
+    "reply_needed": false,
+    "due": null
+   },
+   "intended": {
+    "label": "archive",
+    "priority": "low",
+    "summary": "Monthly product digest newsletter.",
+    "reply_needed": false,
+    "due": null
+   },
+   "defects": [
+    "fence"
+   ],
+   "summary_key": "product digest"
+  },
+  {
+   "id": "rec-03",
+   "email": "From: ana@example.com — Hi, could you tell me what time the design review starts on Thursday? I want to book the room.",
+   "gold": {
+    "label": "reply",
+    "priority": "normal",
+    "summary": "Question: what time the design review starts.",
+    "reply_needed": true,
+    "due": null
+   },
+   "intended": {
+    "label": "reply",
+    "priority": "normal",
+    "summary": "Question: what time the design review starts.",
+    "reply_needed": true,
+    "due": null
+   },
+   "defects": [
+    "prose"
+   ],
+   "summary_key": "design review"
+  },
+  {
+   "id": "rec-04",
+   "email": "From: pm@example.com — The launch checklist needs your sign-off before the November 21 launch. Twenty of twenty-two items are green.",
+   "gold": {
+    "label": "action",
+    "priority": "high",
+    "summary": "Sign off the launch checklist before the November 21 launch.",
+    "reply_needed": true,
+    "due": "2026-11-20"
+   },
+   "intended": {
+    "label": "action",
+    "priority": "high",
+    "summary": "Sign off the launch checklist before the November 21 launch.",
+    "reply_needed": true,
+    "due": "2026-11-20"
+   },
+   "defects": [
+    "fence",
+    "prose"
+   ],
+   "summary_key": "launch checklist"
+  },
+  {
+   "id": "rec-05",
+   "email": "From: ops@example.com — Minutes from today's platform sync are attached: two decisions, one open question about the cache.",
+   "gold": {
+    "label": "fyi",
+    "priority": "low",
+    "summary": "Minutes from the platform sync, for the record.",
+    "reply_needed": false,
+    "due": null
+   },
+   "intended": {
+    "label": "fyi",
+    "priority": "low",
+    "summary": "Minutes from the platform sync, for the record.",
+    "reply_needed": false,
+    "due": null
+   },
+   "defects": [
+    "trailing"
+   ],
+   "summary_key": "platform sync"
+  },
+  {
+   "id": "rec-06",
+   "email": "From: support@example.com — Weekly support digest: three tickets closed, one reopened, none breached the response target.",
+   "gold": {
+    "label": "fyi",
+    "priority": "normal",
+    "summary": "Support digest: three tickets closed this week.",
+    "reply_needed": false,
+    "due": null
+   },
+   "intended": {
+    "label": "fyi",
+    "priority": "normal",
+    "summary": "Support digest: three tickets closed this week.",
+    "reply_needed": false,
+    "due": null
+   },
+   "defects": [
+    "pyrepr"
+   ],
+   "summary_key": "support digest"
+  },
+  {
+   "id": "rec-07",
+   "email": "From: priya@example.com — Following up on Tuesday's thread: no rush on the background, but the signed vendor form needs to come back to me by Tuesday week.",
+   "gold": {
+    "label": "action",
+    "priority": "normal",
+    "summary": "Send the signed vendor form back to Priya.",
+    "reply_needed": true,
+    "due": "2026-11-10"
+   },
+   "intended": {
+    "label": "reply",
+    "priority": "normal",
+    "summary": "Send the signed vendor form back to Priya.",
+    "reply_needed": true,
+    "due": "2026-11-10"
+   },
+   "defects": [
+    "fence"
+   ],
+   "summary_key": "vendor form"
+  },
+  {
+   "id": "rec-08",
+   "email": "From: finance@example.com — Please approve the 48,000-dollar venue deposit. The venue holds the date until November 12, then releases it.",
+   "gold": {
+    "label": "action",
+    "priority": "high",
+    "summary": "Approve the 48,000-dollar venue deposit by November 12.",
+    "reply_needed": true,
+    "due": "2026-11-12"
+   },
+   "intended": {
+    "label": "action",
+    "priority": "high",
+    "summary": "Approve the 48,000-dollar venue deposit by November 12.",
+    "reply_needed": true,
+    "due": "2026-11-12"
+   },
+   "defects": [
+    "bool_str"
+   ],
+   "summary_key": "venue deposit"
+  },
+  {
+   "id": "rec-09",
+   "email": "From: facilities@example.com — Notice: the design review moves to Room 2A from Thursday. Same time, same agenda.",
+   "gold": {
+    "label": "fyi",
+    "priority": "normal",
+    "summary": "Design review moved to Room 2A.",
+    "reply_needed": false,
+    "due": null
+   },
+   "intended": {
+    "label": "fyi",
+    "priority": "normal",
+    "summary": "Design review moved to Room 2A.",
+    "reply_needed": false,
+    "due": null
+   },
+   "defects": [
+    "missing_due"
+   ],
+   "summary_key": "Room 2A"
+  },
+  {
+   "id": "rec-10",
+   "email": "From: legal@example.com — The vendor review is ready for your comments. Please return them by November 18 so the countersign date holds.",
+   "gold": {
+    "label": "reply",
+    "priority": "normal",
+    "summary": "Comment on the vendor review by November 18.",
+    "reply_needed": true,
+    "due": "2026-11-18"
+   },
+   "intended": {
+    "label": "reply",
+    "priority": "normal",
+    "summary": "Comment on the vendor review by November 18.",
+    "reply_needed": true,
+    "due": "2026-11-18"
+   },
+   "defects": [
+    "date_fmt"
+   ],
+   "summary_key": "vendor review"
+  },
+  {
+   "id": "rec-11",
+   "email": "From: ci@example.com — Nightly build 482 failed on the payments branch: two integration tests red. Log attached.",
+   "gold": {
+    "label": "fyi",
+    "priority": "normal",
+    "summary": "Nightly build failed on the payments branch.",
+    "reply_needed": false,
+    "due": null
+   },
+   "intended": {
+    "label": "fyi",
+    "priority": "normal",
+    "summary": "Nightly build failed on the payments branch.",
+    "reply_needed": false,
+    "due": null
+   },
+   "defects": [
+    "extra_field"
+   ],
+   "summary_key": "nightly build"
+  },
+  {
+   "id": "rec-12",
+   "email": "From: release@example.com — Please roll back the flags change before the freeze on Monday. It is causing the checkout errors.",
+   "gold": {
+    "label": "action",
+    "priority": "high",
+    "summary": "Roll back the flags change before the freeze.",
+    "reply_needed": true,
+    "due": "2026-11-09"
+   },
+   "intended": {
+    "label": "action",
+    "priority": "high",
+    "summary": "Roll back the flags change before the freeze.",
+    "reply_needed": true,
+    "due": "2026-11-09"
+   },
+   "defects": [
+    "enum_case"
+   ],
+   "summary_key": "roll back"
+  },
+  {
+   "id": "rec-13",
+   "email": "From: facilities@example.com — Heads-up: the office closes early this Friday for scheduled maintenance. Normal hours resume Monday.",
+   "gold": {
+    "label": "fyi",
+    "priority": "low",
+    "summary": "Office closes early on Friday for maintenance.",
+    "reply_needed": false,
+    "due": null
+   },
+   "intended": {
+    "label": "fyi",
+    "priority": "high",
+    "summary": "Office closes early on Friday for maintenance.",
+    "reply_needed": false,
+    "due": null
+   },
+   "defects": [],
+   "summary_key": "closes early"
+  },
+  {
+   "id": "rec-14",
+   "email": "From: data@example.com — Re the status memo: could you send me the Q3 retention numbers you quoted? I need them for the board pack.",
+   "gold": {
+    "label": "reply",
+    "priority": "normal",
+    "summary": "Asked for the Q3 numbers from the status memo.",
+    "reply_needed": true,
+    "due": null
+   },
+   "intended": {
+    "label": "reply",
+    "priority": "normal",
+    "summary": "Asked for the Q3 numbers from the status memo.",
+    "reply_needed": true,
+    "due": null
+   },
+   "defects": [
+    "trailing",
+    "prose"
+   ],
+   "summary_key": "Q3"
+  },
+  {
+   "id": "rec-15",
+   "email": "From: noreply@dataplan.example — Your data-plan contract renews automatically next month. No action is required.",
+   "gold": {
+    "label": "archive",
+    "priority": "low",
+    "summary": "Auto-notice: the data-plan contract renews next month.",
+    "reply_needed": false,
+    "due": null
+   },
+   "intended": {
+    "label": "archive",
+    "priority": "low",
+    "summary": "Auto-notice: the data-plan contract renews next month.",
+    "reply_needed": false,
+    "due": null
+   },
+   "defects": [
+    "pyrepr"
+   ],
+   "summary_key": "renews"
+  },
+  {
+   "id": "rec-16",
+   "email": "From: security@example.com — The signed security review will be ready Monday. Please send it on to the auditors when it lands.",
+   "gold": {
+    "label": "action",
+    "priority": "normal",
+    "summary": "Send the signed security review on when it is ready.",
+    "reply_needed": true,
+    "due": "2026-11-16"
+   },
+   "intended": {
+    "label": "action",
+    "priority": "normal",
+    "summary": "Send the signed security review on when it is ready.",
+    "reply_needed": true,
+    "due": "2026-11-23"
+   },
+   "defects": [],
+   "summary_key": "security review"
+  },
+  {
+   "id": "rec-17",
+   "email": "From: legal@example.com — The vendor review has concluded: the vendor is accepted with two conditions (quarterly audits, a shorter renewal term). Nothing is needed from you unless you object before November 19.",
+   "gold": {
+    "label": "fyi",
+    "priority": "normal",
+    "summary": "Vendor review accepted with two conditions; object by November 19.",
+    "reply_needed": false,
+    "due": "2026-11-19"
+   },
+   "intended": {
+    "label": "fyi",
+    "priority": "normal",
+    "summary": "The vendor review has been accepted with two conditions attached, and there is nothing for you to do unless you wish to object before the nineteenth of November.",
+    "reply_needed": false,
+    "due": "2026-11-19"
+   },
+   "defects": [
+    "long_summary"
+   ],
+   "summary_key": "accepted with two conditions"
+  },
+  {
+   "id": "rec-18",
+   "email": "From: sam@example.com — Can we move Thursday's call to Friday? Same time. A customer visit has landed on Thursday morning.",
+   "gold": {
+    "label": "reply",
+    "priority": "normal",
+    "summary": "Asked to move Thursday's call to Friday.",
+    "reply_needed": true,
+    "due": "2026-11-13"
+   },
+   "intended": {
+    "label": "reply",
+    "priority": "normal",
+    "summary": "Asked to move Thursday's call to Friday.",
+    "reply_needed": true,
+    "due": "2026-11-13"
+   },
+   "defects": [
+    "enum_synonym"
+   ],
+   "summary_key": "move Thursday's call"
+  },
+  {
+   "id": "rec-19",
+   "email": "From: expenses@example.com — Receipt: October hosting bill, paid by company card. Filed under infrastructure.",
+   "gold": {
+    "label": "archive",
+    "priority": "low",
+    "summary": "Expense receipt for the October hosting bill.",
+    "reply_needed": false,
+    "due": null
+   },
+   "intended": {
+    "label": "archive",
+    "priority": "low",
+    "summary": "Expense receipt for the October hosting bill.",
+    "reply_needed": false,
+    "due": null
+   },
+   "defects": [
+    "bool_str"
+   ],
+   "summary_key": "hosting bill"
+  },
+  {
+   "id": "rec-20",
+   "email": "From: alerts@example.com — PRODUCTION INCIDENT: payments are failing for a subset of checkouts. Join the incident bridge now.",
+   "gold": {
+    "label": "action",
+    "priority": "high",
+    "summary": "Production incident: payments are failing; join the bridge.",
+    "reply_needed": true,
+    "due": "2026-11-06"
+   },
+   "intended": {
+    "label": "action",
+    "priority": "high",
+    "summary": "Production incident: payments are failing; join the bridge.",
+    "reply_needed": true,
+    "due": "2026-11-06"
+   },
+   "defects": [
+    "truncated"
+   ],
+   "summary_key": "payments are failing"
+  },
+  {
+   "id": "rec-21",
+   "email": "From: ana@example.com — What did the retention numbers look like for October? Asking for the newsletter draft.",
+   "gold": {
+    "label": "reply",
+    "priority": "normal",
+    "summary": "Asked what the retention numbers looked like.",
+    "reply_needed": true,
+    "due": null
+   },
+   "intended": {
+    "label": "reply",
+    "priority": "normal",
+    "summary": "Asked what the retention numbers looked like.",
+    "reply_needed": true,
+    "due": null
+   },
+   "defects": [
+    "fence",
+    "trailing"
+   ],
+   "summary_key": "retention numbers"
+  },
+  {
+   "id": "rec-22",
+   "email": "From: people@example.com — The onboarding document has been updated for the new starters. Link inside; no reply needed.",
+   "gold": {
+    "label": "fyi",
+    "priority": "low",
+    "summary": "Onboarding document updated; link inside.",
+    "reply_needed": false,
+    "due": null
+   },
+   "intended": {
+    "label": "fyi",
+    "priority": "low",
+    "summary": "Onboarding document updated; link inside.",
+    "reply_needed": false,
+    "due": null
+   },
+   "defects": [
+    "missing_due"
+   ],
+   "summary_key": "onboarding document"
+  },
+  {
+   "id": "rec-23",
+   "email": "From: travel@example.com — Please approve the travel request for the design review trip. The review is in Room 2A; travel by November 11.",
+   "gold": {
+    "label": "action",
+    "priority": "normal",
+    "summary": "Approve travel to the design review in Room 2A.",
+    "reply_needed": true,
+    "due": "2026-11-11"
+   },
+   "intended": {
+    "label": "action",
+    "priority": "normal",
+    "summary": "Approve travel to the design review in Room 2A.",
+    "reply_needed": true,
+    "due": "2026-11-11"
+   },
+   "defects": [
+    "extra_field",
+    "date_fmt"
+   ],
+   "summary_key": "travel"
+  },
+  {
+   "id": "rec-24",
+   "email": "From: metrics@example.com — Weekly metrics snapshot: signups up four per cent, activation flat, churn down a point.",
+   "gold": {
+    "label": "fyi",
+    "priority": "normal",
+    "summary": "Weekly metrics snapshot: signups up four per cent.",
+    "reply_needed": false,
+    "due": null
+   },
+   "intended": {
+    "label": "fyi",
+    "priority": "normal",
+    "summary": "Weekly metrics snapshot: signups up four per cent.",
+    "reply_needed": false,
+    "due": null
+   },
+   "defects": [
+    "enum_case"
+   ],
+   "summary_key": "metrics snapshot"
+  }
+ ]
+}

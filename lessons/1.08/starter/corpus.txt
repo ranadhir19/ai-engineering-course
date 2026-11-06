@@ -1,0 +1,787 @@
+Lesson 1.01 — The Toolkit. By the end of this lesson you will have built, from raw HTTP, the model client your Inbox Assistant will use for the whole of Phase One.
+No SDK. No framework. And when this client breaks — everything breaks, eventually — you will know exactly which byte to look at.
+Start with the whole lesson in one line. Every AI system you admire — agents, retrieval pipelines, tools that take actions — reduces, at the moment it touches a model, to three primitives: Python running your code, JSON carrying the data, and HTTP moving the bytes.
+Hold onto one mental model and the rest of the course gets easier: the model is a function you do not host.
+You send it text. It returns text. That is the entire contract.
+Everything else — every framework, every agent library, every orchestration tool — is packaging around that one exchange. Packaging can be excellent. But it is packaging.
+In a real system the exchange sits here. Your application decides something. The client carries the decision to the provider. The model runs. The answer travels back — to be checked, logged, costed, and used.
+Notice what the diagram does not have: any magic. Four boxes, two arrows, one conversation. If a vendor's architecture diagram looks more complicated than this, the extra boxes are about scale or safety, not about the call itself.
+Why learn it at this depth, when an SDK would do it in three lines? Because the day the SDK hides the request is the day your first production incident becomes a mystery.
+A wrong header you cannot see. A body slightly malformed, three layers down. A retry policy somebody else chose. Teams lose hours to each of these — not because they are hard, but because they are hidden.
+So the takeaway for Act One, stated before any code appears: if you can build the client by hand, every framework becomes a convenience. Never a crutch.
+Whiteboard. We take one model call apart, byte by byte, until nothing in it can surprise you.
+An HTTP request opens with a request line: a method, a path, a version. For a model call it reads: POST, slash v1, slash chat, slash completions, HTTP 1.1.
+POST is the method for creating something. Here, what gets created is a completion — the model's answer. The path names the resource the way a file path names a file.
+After the request line come headers: name-value pairs describing the delivery. Two matter today. Content-Type declares what the body is — application slash json.
+And Authorization carries your credential: the word Bearer, a space, then the key. Bearer means exactly what it sounds like — whoever bears this token is trusted as you. Guard it like a password, because it is one.
+A single blank line ends the headers. Everything after the blank line is the body. For model APIs, the body is a JSON document. So: what is JSON, exactly?
+JSON has six building blocks. Objects: key-value pairs in braces. Arrays: ordered lists in brackets. Strings in double quotes. Numbers. Booleans — true and false. And null, the explicit nothing.
+That poverty is the point. Six blocks, no exceptions, and every programming language on earth can read and write it. JSON is not the richest format. It is the most agreed-upon one.
+It is also strict. Double quotes only — single quotes are an error. No trailing commas. No comments. When two machines that have never met exchange data, strictness is not pedantry; it is the contract that lets them trust the parse.
+Now the request body, drawn as a tree. At the top: the model name — which function, hosted by the provider, should run.
+Beside it, the knobs: temperature, which Act 1.07 will take apart properly. Today it is a dial we set low, because we want the stand-in's answers steady while we test.
+And the heart of the body: messages — an array of objects, each with a role and a content. This array is the conversation. All of it. Every time.
+Three roles. System sets the standing instructions — the job description. User asks the question. Assistant answers. In a long conversation the history is not stored on a server somewhere; it is this array, growing, resent in full with every call.
+Say that consequence out loud, because lesson 1.03 is built on it: if the whole story is resent every time, long conversations cost more and eventually overflow. Context is a budget. Today we just note the meter exists.
+The response mirrors the request. A status line first: HTTP 1.1, 200, OK. Then headers. Then a JSON body of the same family.
+Inside the body: choices — an array, because a model can offer more than one completion. We take the first choice, its message, and the message's content. That string is the answer.
+And one more field, easy to ignore and expensive to ignore: usage — how many tokens the exchange consumed, prompt side and completion side. From lesson 1.03 you will budget by these numbers. From today, you will at least look at them.
+Now the status codes, drawn as the contract they are. 200: it worked. 400: your request itself is malformed — your fault, fix the request. 401: the credential is missing or wrong.
+429: you are going too fast — slow down; the server may even tell you how long to wait, in a header called Retry-After. And 5xx: the failure is on their side.
+Memorise the shape, not the trivia: 2xx success, 4xx your fault, 429 slow down, 5xx their fault. In about fifteen minutes this table becomes code — it is the client's error mapping, and it will not change for the rest of the phase.
+One layer down, briefly: the JSON text is encoded as UTF-8 bytes. A header, Content-Length, states exactly how many bytes follow, so the receiver knows when the body is complete.
+And the whole exchange travels inside TLS — the S in HTTPS — so the key and the content move sealed. JSON is the text. HTTP is the truck. TLS is the armoured truck.
+Now we build it. One file: inbox underscore client dot py. Standard library only — http.client for the transport, json for the format, urllib for parsing addresses. If Python ships it, we may use it. Nothing else.
+The shape first. A class, ModelClient, holding four things: the base URL, the API key, a timeout, and a debug flag. And one method that matters — chat — taking messages and returning the answer text.
+Before the happy path, the unhappy ones. We define our own exception family: ModelError at the top, and one subclass per row of the whiteboard's table — BadRequestError, AuthError, RateLimitError, ServerError, NetworkError, and MalformedResponseError for a 200 whose body is not the JSON we were promised.
+Why bother? Because callers of this client will never again catch a raw socket error and guess. Every failure leaves this file as one of six named, documented kinds. That is what a boundary is for.
+The constructor splits the base URL with urlparse. The scheme chooses the connection class: https gets HTTPSConnection; plain http gets HTTPConnection. That one branch is how the same client talks to a local stand-in today and a real provider tomorrow.
+The key comes from the environment variable INBOX_API_KEY when it is not passed in. Keys live in environments and secret stores — never in source code, never in a repository. This course will not break that rule even once, even in a toy.
+chat builds the payload first: a Python dictionary with model, messages, temperature — the exact tree from the whiteboard, as data.
+json.dumps turns the dictionary into JSON text. Encode turns the text into UTF-8 bytes. Watch the board: the tree you drew is becoming the bytes you send. Nothing between you and the wire but two function calls you can read.
+Headers next — Content-Type, and Authorization when a key exists. http.client fills in Host and Content-Length itself, from the actual bytes. Then a single request call sends it, and we read the response.
+A debug switch prints the raw request and the raw response to standard error — the receipts. Rule of this course: when something misbehaves, we read the bytes before we form a theory.
+On a 200, we decode the body and json.loads rebuilds the tree. Then the walk: choices, first item, message, content. That string is returned to the caller.
+And before returning, we stash the usage dictionary on the client — last_usage — because a caller who cannot see the cost of a call will eventually be surprised by it.
+On any other status, the code reads the whiteboard table aloud: 400 raises BadRequestError. 401 and 403 raise AuthError. 429 raises RateLimitError, carrying the Retry-After value when the server sent one. 5xx raises ServerError.
+When there is no response at all — connection refused, a timeout, a socket that drops mid-answer — http.client's exceptions are caught and re-raised as NetworkError. One family. Every failure. No leaks.
+That is the whole client: under two hundred lines, and you can now read every one of them. To run it without a paid account, we need something that answers. Enter the stand-in.
+The repository includes mock_model_server.py: a small, real HTTP server that answers questions from a built-in inbox of three emails — a launch announcement, a budget approval, a meeting reschedule — and replies in the same JSON shape a provider uses, token counts included.
+Be precise about what it stands in for: the model. It does not stand in for the protocol. The HTTP is real, the JSON is real, the status codes are real — only the intelligence is pretend, and for testing a client, the protocol is the part that matters.
+Start the server on port 8765. Run ask.py, which asks the inbox when the launch is. And the first run fails — deliberately instructively.
+The receipts show the whole story in one glance. The request went out without an Authorization header — the environment variable is not set in this shell. The stand-in, in its strict mode, answered 401. And our own AuthError carried it home.
+Notice what did not happen: no stack-trace archaeology, no guessing. The status table named the class of problem before we read a single word of the body. This is the return on building the client by hand — it pays out on the very first failure.
+The fix is one line of shell: export INBOX_API_KEY to any value — the local server only checks that a Bearer header exists. Same code, second run: 200.
+The answer comes back drawn from the inbox — the launch email, with its date — and ask.py prints the usage counts beside it: prompt tokens, completion tokens, total. Real numbers from a real exchange, measured, not asserted.
+And the usage line prints beside every answer: prompt tokens, completion tokens, total. Against a real provider those counts are money, and in lesson 1.12 they become a budget. The habit of looking at them starts now.
+Take stock. The Inbox Assistant exists now: an empty folder this morning, it has a voice — a client we understand byte by byte, which will serve for the whole phase and be hardened, never replaced.
+Tutorial: the same client, turned on a second problem — because a primitive you can only use once is not a primitive. The pack adds meeting_notes.txt and summarise_notes.py.
+Look at what changed. Not the client — not one line. The messages changed: a system message that sets the job — summarise these notes into decisions and actions — and a user message carrying the notes themselves.
+Run it, and read the result honestly. Our stand-in can only answer from its little inbox, so what comes back is the closest matching passage, not a true summary. The shape is the lesson: with a real model, this identical pair of messages is what produces the structured summary. The client is the primitive; the messages are the programming — and today you can see both, including exactly where the stand-in ends.
+Now the exercise — the part that makes it yours. You will harden this client, in two moves.
+Move one: a retry policy. Retry the failures that heal — 429 and 5xx — with growing pauses between attempts, and honour Retry-After when the server provides it. Never retry the failures that cannot heal: a 400, a 401, a malformed body. Waiting does not fix a malformed request, and retrying an auth failure just fails louder.
+Move two: keep the rest of the contract intact while you do it — the timeout stays configurable, the error mapping unchanged, the interface identical. Hardening that changes the interface is not hardening; it is a rewrite.
+The pass condition is checkable, and it is printed on the board. The failure harness in the exercise folder runs seven scenarios against the stand-in.
+One: a normal success. Two: rate-limited twice, then success — your client must get there in exactly three attempts. Three: a persistent 500 — the ServerError must surface after exactly four attempts: the original, plus three retries.
+Four: a 400 must fail fast — one attempt, no retry. Five: a 401, the same. Six: a malformed body must raise MalformedResponseError. Seven: a slow server must become a NetworkError at your timeout, not a thirty-second hang.
+You start from the client exactly as built in this lesson — it is waiting in the exercise folder — and against it, the harness fails three of the seven today. Treat that failing run as your specification.
+The worked solution is in the pack, because this course hides nothing — but run the harness against your own client first, and read your failures against the status table. That reading is the skill.
+What the Assistant gained today: its connection to the model, understood at the byte level and proven under failure. Next lesson, 1.02 — Models and Providers: this same client grows one interface over three providers, switchable by configuration, and we measure what each choice costs in money and milliseconds.
+Do the exercise before 1.02; the provider work stands on the hardened client. Post your harness verdict in the comments — seven of seven, or the scenario where it stopped. Bring a notebook.
+
+
+Lesson 1.02 — Models and Providers. By the end of this lesson, the client you built by hand will talk to three different providers through one interface — and you will know, in dollars and milliseconds, what each choice costs. But first, last lesson's exercise — solved in the open, because this lesson stands on it. The exercise was to harden the client: a retry policy, with the contract intact. Here is the shape of the worked solution — it is in the pack, and this is its whole logic. Retry only what heals. A 429 and a 5xx can fix themselves while you wait, so the client waits — backoff doubling from half a second, and a Retry-After header, when the server sends one, overrides the guess. Never retry what cannot heal. A 400 is your request, wrong. A 401 is your credential, wrong. A malformed body will still be malformed in half a second. Those raise at once — one attempt, named error. And the timeout stays a decision, not an accident: a slow server becomes a NetworkError at your timeout, and NetworkError is never retried silently, because a timeout already waited. The harness tells the story in attempt counts: success in one, the rate limit beaten in exactly three, the persistent 500 surfacing after exactly four — one attempt plus three retries — and the three unhealable failures at one each. Seven of seven. If your run differed, the attempt counts are the debugging instrument: they tell you which row of the table your policy got wrong, before you read a line of code. Now — on the hardened client, we build. Act One. What a provider is, and what choosing one actually decides. In 1.01 the model was a function you do not host. The provider is the company that hosts it — and a model is just one entry in their catalogue. Same word, model, on every price page; different machines, limits, and bills behind it. Model names are not portable. A name belongs to one provider's catalogue, means whatever that provider says it means, and can be re-pointed, repriced, or retired without your code changing. Any code that treats a model name as a universal constant is a surprise on a timer. Providers differ on five axes. One: capability — what the model can actually do, which you will measure on your tasks, never from a launch post. Two: the context window — how much text one call can hold. Three: price. Models are metered by the token — priced per million tokens, with input and output priced separately, because generating text costs more than reading it. From 1.01 you already hold the two counts every price needs: usage. Four: latency — how long the exchange takes, which your users feel and your timeouts enforce. Five: terms — what the provider may keep, train on, or log. Terms are an engineering input, not fine print: they decide which data may leave your building. Notice the shape: no axis dominates. The most capable tier is rarely the cheapest or the fastest, and the cheapest window is the smallest. Choosing a provider is choosing a point on a surface — and the right point depends on the task. That dependence is the lesson. A system with one provider hard-wired has made every future task fit one point on the surface. A system with an interface can move — per task, by rule, measured. Takeaway, before any board work: a provider is a supplier, a model is a product, and your client should be able to change suppliers the way a config file changes — because prices, limits and terms will change under you whether you are ready or not. Whiteboard. We draw the surface, derive the cost of one call from the numbers you already collect, and design the interface before we write it. Three axes on the board: capability, cost, latency. Every provider's every model is a point in this space. There is no best point — there is a frontier, and tasks choose where on it they need to sit. Put the three stand-ins we will build on it. Sprout: the small tier — cheapest, a 600-token window. Atlas: the balanced tier — mid-priced, 4,000 tokens, and the fastest of the three. Oracle: the frontier — the deepest window, 20,000 tokens, at frontier prices. Now the cost of one call, derived. A call consumes prompt tokens and produces completion tokens. The provider prices each stream per million. So the cost is: prompt tokens times the input price, plus completion tokens times the output price, over a million. That is the entire pricing model of the industry in one line of arithmetic — and notice you have been collecting both counts since 1.01. Usage was never trivia. It was the bill, arriving early. Worked example, with real tier prices. Our launch question: 11 prompt tokens, 38 completion tokens. On Sprout's prices that is 11 times 0.15 plus 38 times 0.30, over a million — about thirteen millionths of a dollar. The same exchange on Oracle's prices: 11 times 5 plus 38 times 15, over a million — about six hundred twenty-five millionths. Same question. Same answer shape. Roughly forty-eight times the price. Hold that number; we will measure it within the hour. Latency refuses to line up with price. On our stand-ins the balanced tier answers fastest and the frontier slowest — in the real market the ordering shuffles by provider, load, and hour. Which is the point: latency is measured per call, or it is astrology. And the window is a hard wall, not a guideline. A prompt bigger than the window does not get truncated by a kind provider; it gets rejected — a 400 that names the limit. Lesson 1.03 turns the window into a budget you manage; today we just refuse to walk into the wall. Now the design. Everything that differs between providers fits in a table: the base URL, the model name, where the key lives, two prices, one limit. Six fields. If a difference cannot fit in the table, it is not a provider difference — it is a design smell. One interface over the table: a client bound to a row. The caller names a provider, sends messages, receives text — and afterwards can read three receipts: the usage, the dollars, the seconds. Choice becomes a configuration value; measurement becomes automatic. Two failures get names of their own. Oversize is not a generic bad request — it is ContextTooLargeError, because the fix is a different decision: a bigger provider or a smaller prompt. And a provider that cannot be reached is ProviderUnavailableError — named, because what happens next is a policy, and policies are never silent. No silent fallback, ever. If the frontier is down and the system quietly answers from the cheap tier, the quality changed and nobody decided it. Fallbacks may exist — written in the caller's code, in the open, where they can be reviewed and tested. Act Three. We build it — and because the providers are stand-ins with published tables, every claim from the whiteboard gets measured before the act ends. The base is untouched: the hardened client from the 1.01 exercise solution is this lesson's client, byte for byte. Everything new is added below it — a table, a function, a subclass, two exceptions. The providers themselves: one server program, three profiles. Each profile is the row from the whiteboard — model name, port, context limit, a simulated latency it actually sleeps, and the two prices. Start three processes and the market exists, on your machine, offline. The server enforces the wall: it counts the prompt's tokens the same way 1.01 counted — whitespace words — and over the limit it answers 400 with the code context_length_exceeded and the numbers in the message. No silent truncation, ever. The PROVIDERS table in the client mirrors the server profiles exactly — it must, because the exercise harness will recompute your costs from the server-published prices and compare them with what your client charged. cost_usd is the whiteboard's one line of arithmetic, as a function: usage in, dollars out. It is five lines long and it is the most financially important function in the phase — every budget decision from here to 1.12 is this function, summed. ProviderClient binds the client to a row. The provider name selects the base URL and model; the key comes from that provider's own environment variable — SPROUT_API_KEY, ATLAS_API_KEY, ORACLE_API_KEY — because keys live with suppliers, not in code. Its chat takes no model argument — the binding carries it. Around the inherited call it starts a stopwatch, and on success it records elapsed time and converts last_usage into last_cost_usd. The receipts write themselves. The re-naming is ten lines: catch BadRequestError, and if its text carries context_length_exceeded, raise ContextTooLargeError; catch NetworkError and raise ProviderUnavailableError with the provider's name in the message. Everything else passes through untouched. First run: one question, three providers. Watch the receipts. Read them. Identical answers — the stand-ins share one inbox — at thirteen, seventy, and six hundred twenty-five millionths of a dollar. The whiteboard predicted forty-eight times between cheapest and frontier; the wire says forty-seven point seven. Close enough to trust the arithmetic, different enough to prove we measured. And the stopwatch disagrees with the price list, as promised: Atlas, the mid-priced tier, is fastest at 0.18 seconds; the frontier takes 0.61. Cheap, fast, capable: pick the axis per task, because no tier wins all three. Configuration proof: ask_via.py reads the provider from an environment variable. Same file, same question — change INBOX_PROVIDER and the receipts change. Nothing recompiled, nothing edited. That is what switchable means. Now the honest failure. The project brief is about 750 tokens. Send it to Sprout, limit 600. A 400 comes back, the client renames it, and the message carries the numbers: prompt_tokens 753 exceeds context limit 600. One request, no retries — the hardened policy from this morning's walkthrough correctly refuses to retry a failure that cannot heal. Note what did not happen: the prompt was not silently shortened, and the call was not quietly re-sent somewhere bigger. The caller sees the wall, with measurements, and decides. That caller is you, in Act Four. Act Four. A workload, a rule, and a measured saving. The tutorial workload is six tasks, shaped like real traffic: three short questions, a question carrying a 300-token memo, a question carrying the 750-token brief, and a summary of that brief. Run it the lazy way first — everything to the frontier, the default nobody chose. The log totals twelve thousand six hundred ten millionths of a dollar and 3.63 seconds. That is the number a routing rule has to beat. Now the rule, in three lines. A summary goes to Oracle — output-heavy, quality-critical; that is what the frontier is for. A task carrying a document goes to Atlas — the window holds it, the price is sane. Everything else goes to Sprout. Check the rule against the wall before running it: Sprout only ever receives prompts under 200 tokens, against a 600 limit; Atlas receives at most the brief, against 4,000. The rule cannot route a task into a rejection. A rule that can is a bug with a schedule. Run it routed. The log: routed total is 43.7 percent of all-oracle — a 56.3 percent saving, and the whole workload finishes in 1.87 seconds against 3.63. The rule did not just cut the bill; it cut the wait, because most tasks left the slow tier. Read one row closely: the summary still went to Oracle and still cost 4,510 millionths — most of the routed total. Routing is not magic; it spends where spending matters and refuses to spend where it doesn't. The frontier earns its price exactly once in six tasks. The exercise is to implement that rule — choose_provider and run_routed — from the statement in the pack. The interface is given; the harness already passes four of its six scenarios against the starter. The two that fail are the rule, and the saving it buys. The pass condition, checkable as always: the routes are exactly sprout, sprout, oracle, atlas, sprout, atlas; the charged costs match the server-published prices to the last decimal the float can hold; and the routed total is at most half the all-oracle total. One scenario deserves a sentence of its own: with Oracle's server stopped, the harness requires a ProviderUnavailableError that names the provider — and requires that nothing was quietly answered by somebody else. In this course, a fallback you did not write does not exist. What the Assistant gained today: a choice. Yesterday it could call one endpoint. Today it stands in front of a small market — three suppliers behind one interface, every call priced and timed, and a rule that spends deliberately. Next lesson, 1.03 — Tokens and Context Windows: the meter becomes the subject. You will count tokens properly, watch a window fill, and build the budgeter that keeps the Assistant inside it. Do the exercise before 1.03; the budgeter stands on the routed client. Post your routed total in the comments — the percentage, not just the pass. Bring a notebook.
+# AI Engineering — The Complete Course
+
+Companion code for the course *AI Engineering — The Complete Course*,
+from The Architect's AI Workshop channel.
+
+Every lesson ships runnable code that needs nothing but Python 3 and its
+standard library. No installs, no API keys, no network: each lesson
+pairs a small client you build yourself with a local mock server, so
+the HTTP on the wire is real and inspectable while the "model" is
+deterministic and offline.
+
+## The course map
+
+The course is one long thread in three phases. Each phase builds a
+system, and the next phase grows out of the one before it.
+
+### Phase 1 — Inbox Assistant
+
+Build a client that talks to a model endpoint over HTTP, then harden it
+until it survives everything the wire can do to it. The running thread
+system is a personal **Inbox Assistant** that answers questions about a
+small inbox of emails.
+
+### Phase 2 — Knowledge Service
+
+Give the assistant real material to answer from: documents, chunking,
+embeddings, ranking and a small HTTP service of its own. The thread
+system becomes a **Knowledge Service** that other programs can call.
+
+### Phase 3 — Agent Platform
+
+Let the system act: tools, planning loops, memory, evaluation and
+guardrails, assembled into an **Agent Platform** that runs the Inbox
+Assistant and the Knowledge Service as tools of its own.
+
+## Phase 1 lessons
+
+- **1.01 The Toolkit: Python, JSON & HTTP** — a chat client and a mock
+  model server, built from the standard library alone.
+- **1.02 Models & Providers** — one interface over three providers,
+  switchable by config, with cost and latency measured per call.
+- **1.03 Tokens & Context Windows** — what a token is, why windows
+  fill, and a token counter and context budgeter inside the client.
+- **1.04 APIs, SDKs & Streaming** — when the SDK helps, when it hides
+  the thing that breaks, and streaming with a clean abort.
+- **1.05 Prompt Engineering** — instructions, examples and structure
+  as programming; a versioned prompt-template library.
+- **1.06 Context Engineering** — the context window as a workspace
+  you design: what earns a place in it, and what each inclusion costs.
+- **1.07 Temperature & Sampling** — what sampling does to a
+  distribution, measured on the Assistant's own tasks.
+- **1.08 Structured Outputs** — schemas as contracts, with
+  schema-validated extraction and a repair loop.
+- **1.09 Function Calling** — the model proposes, the code disposes:
+  real tools with full validation.
+- **1.10 Validation at the Boundary** — input sanitisation and output
+  checking as middleware around every model call.
+- **1.11 Prompt Injection & AI Security Basics** — the attack
+  classes, stated honestly, with tripwires on the middleware.
+- **1.12 Measure Everything: Cost, Latency, Testing & Logging** —
+  per-call instrumentation, a golden-set test runner, structured logs.
+- **Phase 1 Capstone — The Inbox Assistant, Finished** — the thread
+  application completed to a stated, checkable standard.
+
+Lessons for Phases 2 and 3 are added to this repository as the course
+reaches them.
+
+## How a lesson folder is organised
+
+Each lesson lives under `lessons/` in a folder named by its number,
+for example `lessons/1.01/`, and contains:
+
+- `README.md` — what the lesson builds, the exercise statement, and
+  the measurable condition that says you passed it.
+- `starter/` — the skeleton you start from: same public interface as
+  the solution, with the interesting bodies replaced by guided TODO
+  steps. It imports and runs; it just does not do the work yet.
+- `solution/` — the complete, worked version from the video.
+- `exercise/` — the follow-on task that hardens or extends the
+  solution, with its own harness. The exercise's own `solution/`
+  subfolder holds the worked answer to the exercise.
+
+## How to run an exercise harness
+
+From the repository root:
+
+    python3 validate.py
+
+That compiles every Python file in the repository, checks each
+lesson folder's structure, and runs the lesson exercise harnesses
+(1.01 failure harness, 1.02 routing harness)
+against the exercise solution client.
+
+To run one harness directly, from its lesson's exercise folder:
+
+    cd lessons/1.01/exercise
+    python3 failure_harness.py
+
+It prints one PASS or FAIL line per scenario and exits non-zero if
+anything fails. Point it at another client to test that client instead,
+for example the unhardened starting client in the same folder:
+
+    python3 failure_harness.py --client inbox_client.py
+
+## Ground rules for all the code here
+
+- Python standard library only, everywhere. If a lesson needs a new
+  idea, it builds the idea; it does not install it.
+- Deterministic and offline: mock servers, fixed data, no live APIs.
+- Errors are part of the interface. Every client in this repository
+  raises typed exceptions, never bare strings or silent `None`.
+
+# Lesson 1.01 — The Toolkit: Python, JSON & HTTP
+
+Phase 1 (Inbox Assistant), Lesson 1 of 12.
+
+## Summary
+
+Before any framework, any SDK or any live API, there are three things
+every AI engineer actually does all day: hold data as JSON, send it
+over HTTP, and deal with what comes back — including when what comes
+back is an error. This lesson builds that whole loop by hand, using
+nothing but the Python standard library, against a local mock server
+that behaves like a real chat-completions endpoint: same request
+shape, same response shape, same failure modes, fully deterministic
+and offline.
+
+## What was built
+
+- `mock_model_server.py` — a mock model endpoint on
+  `http.server.ThreadingHTTPServer`. In its normal mode it answers
+  questions extractively from a built-in inbox of three short emails
+  (a project launch, a budget approval, a meeting reschedule): it
+  scores the emails by keyword overlap with your last user message and
+  returns the best email's relevant sentences. Its other modes
+  reproduce the failures a real endpoint produces: missing auth,
+  rate limiting, server errors, bad requests, malformed bodies, and
+  responses that never arrive in time.
+- `inbox_client.py` — `ModelClient`, a small client for that endpoint
+  built on `http.client` and `urllib.parse` only. One method,
+  `chat(messages)`, returns the assistant's reply text and stores the
+  response's usage numbers on `client.last_usage`. Every failure is a
+  typed exception: `BadRequestError`, `AuthError`, `RateLimitError`
+  (carrying `retry_after`), `ServerError`, `NetworkError`, and
+  `MalformedResponseError`, all under a common `ModelError` base.
+  With `debug=True` the client prints the raw request (API key
+  redacted) and the raw response to stderr — the wire, made visible.
+- `ask.py` — a driver that asks the inbox a question and prints the
+  answer.
+- `summarise_notes.py` (solution, Act 4) — reads `meeting_notes.txt`,
+  sends it as a system + user message pair asking for a summary, and
+  prints the result.
+
+## How to run everything
+
+Terminal 1, from either `starter/` or `solution/`:
+
+    python3 mock_model_server.py --port 8765 --mode ok
+
+Terminal 2, same folder:
+
+    python3 ask.py
+    python3 summarise_notes.py        (solution folder only)
+
+Try the other server modes (`auth`, `ratelimit2`, `server_error`,
+`bad_request`, `malformed`, `slow`) and watch the client raise the
+matching exception for each. Add `debug=True` to the client in a
+scratch copy and read the actual bytes.
+
+The starter folder is where you begin: its `inbox_client.py` is a
+skeleton with the same public interface and five guided TODO steps
+inside `chat()`. Its `ask.py` fails with a `NotImplementedError`
+pointing at those steps — that failure is the starting line, not a bug.
+
+## The exercise
+
+In `exercise/`: harden the client. Add retry with exponential backoff
+for the two failures that can heal — `RateLimitError` and
+`ServerError` — and never retry the ones that cannot. Full statement
+in `exercise/README.md`; the graded starting point is
+`exercise/inbox_client.py`, an unmodified copy of the solution client,
+and the worked answer is in `exercise/solution/`.
+
+### Measurable pass condition
+
+Run, from `exercise/`:
+
+    python3 failure_harness.py
+
+It must print PASS for all seven scenarios and exit 0:
+
+1. **ok** — a normal question returns a non-empty answer mentioning
+   the launch, in exactly 1 request.
+2. **ratelimit2** — two 429s then success: the call succeeds, the
+   server saw exactly 3 requests, and at least 1.5 s elapsed, proving
+   the Retry-After wait (or equivalent backoff) really happened.
+3. **server_error** — a persistent 500 raises `ServerError` after
+   exactly 4 requests: 1 attempt + 3 retries.
+4. **bad_request** — a 400 raises `BadRequestError` after exactly
+   1 request: never retried.
+5. **auth** — no key against an auth-requiring server raises
+   `AuthError` after exactly 1 request; the same server with a key
+   answers normally (2 requests total).
+6. **malformed** — a 200 with a non-JSON body raises
+   `MalformedResponseError` after exactly 1 request: never retried.
+7. **slow** — a server that sleeps 30 s, called with a 1-second
+   timeout and retries disabled, raises `NetworkError` in under 10 s.
+
+Point the same harness at the unhardened starting client and it fails
+scenarios 2, 3 and 7 — that contrast is the lesson:
+
+    python3 failure_harness.py --client inbox_client.py
+# Lesson 1.02 — Models & Providers
+
+Phase 1 (Inbox Assistant), Lesson 2 of 12.
+
+## Summary
+
+Lesson 1.01 built one client for one endpoint. Real systems choose:
+the same question can be answered by a small cheap model, a balanced
+model, or a frontier model, and the three differ in context window,
+price, latency and terms. This lesson builds **one interface over
+three providers, switchable by configuration alone**, wires it into
+the hardened 1.01 client, and measures what each choice costs — in
+tokens, dollars and seconds — on a real workload. The providers are
+local stand-ins with published price tables, context limits and
+simulated latency, so every number in the lesson is measured, not
+asserted, and everything runs offline with the standard library only.
+
+## What was built
+
+- `mock_provider_server.py` — one process emulates one provider
+  (`--profile sprout|atlas|oracle`, ports 8771/8772/8773). Profiles
+  differ in model name, context limit (600 / 4,000 / 20,000 tokens),
+  simulated latency (0.30 s / 0.15 s / 0.60 s) and prices per million
+  tokens (in/out: $0.15/$0.30, $0.80/$1.60, $5.00/$15.00). A prompt
+  over the context limit is rejected with HTTP 400 and error code
+  `context_length_exceeded` — never silently truncated. Answers are
+  extractive over the same three-email inbox as 1.01; a user message
+  starting with "summarise" gets a digest of all three.
+- `inbox_client.py` — the hardened 1.01 client, unchanged, plus the
+  `PROVIDERS` table (everything that differs between providers is
+  data: base URL, model, key environment variable, prices, context
+  limit) and `ProviderClient`, which binds the client to one row:
+  no model argument, per-call timing, dollar cost from the usage
+  counts, and two re-named failures — `ContextTooLargeError` and
+  `ProviderUnavailableError`. There is no silent fallback anywhere:
+  choosing a provider is the caller's decision, in the open.
+- `compare_providers.py` — one question through all three providers,
+  with the three receipts side by side, then the honest failure:
+  the ~750-token brief sent to the 600-token provider.
+- `ask_via.py` — the same question with the provider chosen by the
+  `INBOX_PROVIDER` environment variable. No code changes.
+- `route_workload.py` + `workload.py` + `router.py` — a six-task
+  workload (short questions, a document question, a summary) run two
+  ways: all-frontier, and routed by the lesson's rule. Measured on
+  this pack: routed **$0.0055069** vs all-oracle **$0.0126100** —
+  43.7% of the cost, and faster (1.87 s vs 3.63 s).
+
+## How to run everything
+
+From `solution/` (drivers start the three servers themselves):
+
+    python3 compare_providers.py
+    python3 route_workload.py
+
+To run `ask_via.py` standalone, start the servers first, one per
+terminal, then:
+
+    INBOX_PROVIDER=oracle python3 ask_via.py
+
+The starter folder is where you begin Act 3: its `inbox_client.py`
+is the 1.01 hardened client with the 1.02 additions marked as guided
+TODO steps, and its `compare_providers.py` stops at the starting
+line until those steps exist — that stop is deliberate.
+
+## The exercise
+
+In `exercise/`: implement the routing rule and the routed run.
+Full statement in `exercise/README.md`; the graded starting point is
+`exercise/router.py`, the harness is `exercise/router_harness.py`,
+and the worked answer is in `exercise/solution/`.
+
+### Measurable pass condition
+
+Run, from `exercise/`:
+
+    python3 router_harness.py
+
+It must print PASS for all six scenarios and exit 0:
+
+1. **config_switch** — one interface answers the same question on all
+   three providers, usage reported each time.
+2. **cost_exact** — the cost the client charges for an exchange
+   equals the cost computed from the *server-published* prices.
+3. **context_guard** — the oversize brief to sprout raises
+   `ContextTooLargeError`, and the server saw exactly 1 request.
+4. **routing_rule** — the workload routes exactly: sprout, sprout,
+   oracle, atlas, sprout, atlas.
+5. **routing_saves** — the routed total is at most half the
+   all-oracle total on the same workload (measured: 43.7%).
+6. **provider_down** — with oracle's server stopped, the call raises
+   `ProviderUnavailableError` naming the provider; nothing is
+   silently re-routed.
+
+Against the starter, scenarios 4 and 5 fail and the other four pass —
+the interface is given; the rule, and the saving it buys, are the
+exercise:
+
+    python3 router_harness.py --router router.py
+
+Meeting notes -- Inbox Assistant planning, Monday
+
+Attendees: Maya, Priya, Tom.
+
+We confirmed the launch rehearsal comes before the launch itself, and
+the support rota starts on launch morning. Finance reminded us the
+budget receipts are due by Friday. The design review has moved, so
+everyone needs to update their calendar for the rescheduled meeting
+time on Thursday at 2 pm in Room 4B.
+
+Action items:
+- Maya: circulate the rehearsal notes.
+- Priya: send the budget receipts to Finance.
+- Tom: update the calendar invite for the rescheduled meeting.
+
+Project Brief: The Inbox Assistant
+Prepared for the Phase 1 build review. Status: approved for build.
+
+1. Purpose
+The Inbox Assistant is a small internal tool that answers questions about a team inbox. A user asks a question in plain language, and the assistant answers from the messages the team has received: launch dates, budget approvals, meeting changes, vendor notices, and the everyday traffic of a working project. The assistant exists because the answers already exist. They are sitting in the inbox, spread across dozens of threads, and finding them by hand costs the team several hours every week.
+
+2. Scope
+The first release reads one shared inbox and answers questions about its contents. It does not send mail, it does not delete mail, and it does not act on anything it reads. Answers are extractive: the assistant quotes the relevant sentences from the message it matched, so a user can always check the answer against the source. Summaries are labelled as summaries. Anything the assistant cannot find is reported as not found; inventing an answer is treated as a defect of the highest severity.
+
+3. Workstreams
+The project has four workstreams. The Platform workstream owns the model client, the provider connections, and the serving layer. The Quality workstream owns the evaluation harness, the failure harness, and the golden test set that every release must pass. The Data workstream owns inbox ingestion, retention rules, and the redaction pass that removes personal data before indexing. The Product workstream owns the question interface, the feedback loop, and the weekly report on which questions the assistant failed to answer. Each workstream has one named lead, and cross-workstream disputes are settled at the Friday build review.
+
+4. Timeline
+The rehearsal is on November 14, 2026. The launch is on Wednesday, November 18, 2026. The support rota starts on launch morning and runs for two weeks. A second release, adding the meeting-notes digest, is planned for early December if the launch review is clean.
+
+5. Budget
+Finance has approved 48000 dollars for the project. The approved budget covers hosting and evaluation, and spending can start immediately. Model usage is expected to be the largest running cost once real traffic arrives, which is why every call is logged with its token usage and its price from the first day of the build, not added later as an afterthought.
+
+6. Risks
+The largest risk is a confident wrong answer, which is why the extractive design and the not-found behaviour are requirements, not preferences. The second risk is cost drift: a small change in how much context each question carries can double the monthly bill without anyone noticing, so the cost log is reviewed weekly against the budget. The third risk is provider dependence. The assistant must be able to move between model providers by configuration alone, because pricing, limits, and terms change faster than release cycles.
+
+7. Measurement
+From the first day of the build, every model call is logged with five fields: the provider, the model, the prompt tokens, the completion tokens, and the elapsed time. The log is the project's memory of what its intelligence costs. Once a week the Platform workstream publishes three numbers from it: the average cost per answered question, the slowest five percent of calls, and the share of calls that ended in a typed error. These numbers are reviewed at the build review alongside the feature list, because a feature that doubles the cost per question is a budget decision disguised as a design decision. The same log drives provider choice: if two providers answer the golden set equally well, the cheaper and faster one carries the traffic, and the log is the evidence either way.
+
+8. Working agreements
+All client code is standard library only until the Phase 1 review, so that every behaviour of the system can be read in our own source. Failures are shown, not hidden: a failed run stays in the record with its receipts, and the fix is explained against the bytes that failed. Configuration, including provider choice, lives outside the code, so that changing a provider is an operations decision and never a code change reviewed under time pressure.
+
+9. Success criteria
+The launch review will check four things: answer accuracy on the golden question set, the not-found rate on questions the inbox cannot answer, cost per answered question against the budget line, and the failure harness passing in full against the shipped client.
+Status Memo: Inbox Assistant, week of November 2, 2026
+From: Product workstream. To: all workstream leads.
+
+Build status
+The model client passed the failure harness in full this week: all seven scenarios, including the rate-limit and slow-server cases. The provider comparison is now running against three configurations, and the cost log is recording token usage and price for every call. The evaluation harness draft is with the Quality workstream for review.
+
+Schedule
+The rehearsal remains on November 14 and the launch remains on Wednesday, November 18. The vendor review is the one date outside our control. It is currently booked for November 9. If the vendor review slips by two weeks, the public launch moves from November 18 to December 2, because the rehearsal cannot be certified against an unreviewed vendor build, and the support rota would move with it. A slip of a few days can be absorbed; a slip of two weeks cannot.
+
+Decisions needed
+Finance asked whether the budget line for model usage should be reviewed monthly or weekly. The recommendation from the Platform workstream is weekly, because a routing change can double or halve the spend between two monthly reviews without any change in traffic. The Data workstream asked for a decision on retention: raw messages kept for ninety days, indexed text for one year. Both decisions are due at the Friday build review.
+
+Open risks
+Two answer-quality issues were found in the golden set this week. In both cases the assistant quoted a real sentence that did not answer the question asked, because the sentence shared keywords with the question. The Quality workstream is adding a relevance check to the evaluation harness before launch.
+Project Aurora — Launch Checklist and Risk Register
+
+This checklist governs the launch of Project Aurora on Wednesday, November 18, 2026. Every item has a named owner. An item without an owner does not exist; it is a hope, not a plan. The rehearsal on November 14 is the last point at which a launch risk can be retired cheaply, and every owner confirms their items at the rehearsal or escalates them the same day.
+
+Risk 1 — Rehearsal slippage. The launch rehearsal depends on the staging environment being frozen by November 13. If the freeze slips, the rehearsal compresses into the weekend and the support rota loses its rest day before launch morning. Owner: Priya Nair, release manager. Mitigation: the freeze date is announced to all workstreams today, and any change after November 12 requires Priya's written approval.
+
+Risk 2 — Support rota gaps. The support rota starts on launch morning and runs for fourteen days. Two overnight shifts in the first week are still unfilled, and an unfilled shift is a launch risk because the first seventy-two hours carry the highest question volume. Owner: Marcus Webb, support lead. Mitigation: Marcus publishes the final rota at the rehearsal, and the escalation phone list is printed, not only shared online.
+
+Risk 3 — Rollback readiness. The rollback plan exists but has never been rehearsed end to end. A rollback that has only been read is a document, not a capability. Owner: Dana Osei, infrastructure lead. Mitigation: Dana runs a timed rollback drill during the rehearsal, and the drill result is recorded in this checklist before launch day.
+
+Risk 4 — Vendor dependency. The vendor review for the data pipeline contract is still open, and a two-week slip in that review moves the pipeline migration behind the launch. The launch does not depend on the migration, but the launch announcement mentions it, which makes the dependency real in public even where it is not real in engineering. Owner: Elena Petrova, vendor manager. Mitigation: Elena confirms the announcement wording with the vendor this week, and the announcement names no migration date.
+
+Risk 5 — Question volume. The inbox assistant will face launch questions it has never seen, and its answers are extractive: it can only repeat what the inbox already says. A question with no matching email gets the honest no-match answer, which is correct behaviour and still a support cost. Owner: the inbox assistant team lead. Mitigation: the three launch emails are written to answer the ten most likely questions, and the no-match rate is reviewed every morning of the first week.
+
+Risk 6 — Calendar collisions. The design review meeting was rescheduled to Thursday at 2 pm in Room 4B, which now collides with the launch communications review. Owner: the project coordinator. Mitigation: one of the two meetings moves before the rehearsal, and the decision is announced in the launch channel, not in email alone.
+
+Sign-off. Each owner signs against their risks at the rehearsal. A risk that cannot be mitigated is not hidden; it is carried into launch day in writing, with its owner named, so that the launch decision is made with open eyes.
+Vendor Review — Data Pipeline Contract Renewal
+
+This review covers the renewal of the data pipeline contract that moves inbox exports to the analytics store every night. The current contract expires on December 31, 2026. The renewal has been under review for six weeks, and this document records the state of the review, the open questions, and the dates that matter.
+
+Background. The pipeline moves one export per night, and the export has failed twice in the last quarter. Both failures were detected by the morning report, not by the pipeline itself, which is the first finding of this review: the contract pays for movement, and the monitoring that makes movement trustworthy is ours, not the vendor's. Any renewal should price that honestly.
+
+Commercial state. The vendor proposes a three-year term with a four percent annual increase and a ninety-day exit clause. Finance has approved a budget envelope for the renewal, and the approved envelope covers the proposed price for the first two years. The third year exceeds the envelope if the increase compounds as drafted, and that gap is an open item for the negotiation, not a surprise for next year.
+
+Schedule risk. The review was scheduled to close on November 6. It did not. The vendor's security questionnaire came back with two unanswered sections, and our reviewers cannot sign until those sections are complete. If the review slips by two weeks, the signature lands after the Project Aurora launch, and the migration that the renewal enables moves behind the launch. The migration is not on the launch critical path, but the launch announcement refers to it, so a slip is visible outside the building even though it changes nothing inside it.
+
+Technical findings. First, the export format is a nightly full dump, and a full dump grows with the inbox; an incremental export would cut the transfer window by an order of magnitude, and the vendor supports it at no extra charge, but only from the renewed contract. Second, the vendor's retry behaviour on a failed transfer is a single retry after one hour, which is how a one-hour fault became a missing morning report. Third, the contract's service levels measure the vendor's response to a ticket, not the arrival of the data, and the renewal draft keeps that definition. Each of these is fixable in drafting; none of them fixes itself.
+
+Open questions. Who owns the monitoring gap if the renewal keeps the current service definition — the vendor, or the team that reads the morning report? Does the three-year term still make sense if the export format changes in year one? What does the exit clause actually cost if it is exercised in the first year, in money and in migration effort? The reviewers want these answered in the contract, not in a side letter.
+
+Recommendation. Close the security questionnaire this week, negotiate the third-year increase against the incremental-export commitment, and sign before the end of November. If the signature slips past the launch, publish the migration date only when the contract is signed. A date announced before a signature is a promise made with somebody else's pen.
+
+Prepared by the vendor management office. Distribution: project leads, finance, and the launch coordinator, because the schedule risk touches the launch announcement.
+Support Digest — Inbox Assistant, First Month
+
+This digest summarises the first month of support questions sent to the inbox assistant and what the team learned from them. The assistant answers extractively from the inbox it can search: a project launch, a budget approval, and a meeting reschedule. Every number below comes from the support log, and the log is the only source used.
+
+Volume. The assistant received 412 questions in the first month. Of those, 356 were answered from a matching email, 41 received the honest no-match answer, and 15 were follow-ups to an earlier answer in the same conversation. The no-match rate is just under ten percent, and it is concentrated in two topics the inbox simply does not cover: password resets and building access. Those questions belong to a different system, and the correct fix is a signpost, not a bigger inbox.
+
+The launch questions. Questions about the Project Aurora launch date were the single largest group, at 138 of 412. Most asked for the date; a noticeable minority asked whether the date had moved, which the inbox cannot answer beyond the announcement it already holds. When the launch rehearsal notes are published, the assistant's answers improve without any code changing, because the inbox it searches will hold a better email. That is the quiet lesson of the first month: for an extractive assistant, content is capability.
+
+The budget questions. Eighty-nine questions asked about the approved budget of 48000 dollars, mostly variations on what the money covers and where receipts go. The budget email answers both, and the answer rate on this topic was the highest of any group. One question in this group failed oddly: it asked about a budget for a different project, and the assistant matched the word budget and answered with this project's number. Keyword overlap cannot tell two budgets apart, and the team has noted it as a known limitation, in writing, where users of the log can see it.
+
+The meeting questions. Sixty-three questions asked about the design review meeting, and nearly all of them were asked after the reschedule was announced. The assistant answered with the new time, Thursday at 2 pm in Room 4B, because the reschedule email is the one that matches. Nobody asked about the old time after the first week, which suggests the announcement reached the people who needed it.
+
+Follow-ups. Fifteen questions were follow-ups: they referred to an earlier answer — "and what about the rehearsal?" — and the assistant, which treats every question as a new search, answered some of them from the wrong email. A follow-up is a conversation, and the assistant does not yet keep one. This digest records that as the first month's clearest product finding: the next capability the assistant needs is a memory of what it has already said, held inside a window that is not infinite.
+
+Coverage note. The digest covers questions the assistant received. It cannot cover questions people decided not to ask, and it does not try.
+
+"""ModelClient + one interface over three providers (Lesson AIE 1.02).
+
+The ModelClient below is the hardened client from Lesson 1.01's
+exercise solution, unchanged: same interface, same error mapping, same
+retry policy. What 1.02 adds lives entirely in data plus one subclass:
+
+- ``PROVIDERS`` -- a table. Everything that differs between providers
+  (base URL, model name, key environment variable, prices, context
+  limit) is a row in this table, not a branch in the code.
+- ``ProviderClient`` -- a ModelClient bound to one row of the table.
+  Its ``chat`` takes no model argument, times the call, converts the
+  response's usage into dollars with the row's prices, and re-names
+  the two failures a multi-provider caller must be able to see:
+  a 400 carrying "context_length_exceeded" becomes
+  ``ContextTooLargeError``; a network failure becomes
+  ``ProviderUnavailableError`` naming the provider. Nothing is
+  silently re-routed: choosing a provider is the caller's decision,
+  made in the open.
+
+Standard library only.
+"""
+
+import http.client
+import json
+import os
+import sys
+import time
+import urllib.parse
+
+
+class ModelError(Exception):
+    """Base class for every error raised by ModelClient."""
+
+
+class BadRequestError(ModelError):
+    """The server rejected the request itself (HTTP 400). Retrying will not help."""
+
+
+class AuthError(ModelError):
+    """Missing or rejected credentials (HTTP 401 / 403). Retrying will not help."""
+
+
+class RateLimitError(ModelError):
+    """Too many requests (HTTP 429). ``retry_after`` is seconds, or None."""
+
+    def __init__(self, message="rate limited", retry_after=None):
+        super().__init__(message)
+        self.retry_after = retry_after
+
+
+class ServerError(ModelError):
+    """The server failed while handling a valid request (HTTP 5xx)."""
+
+
+class NetworkError(ModelError):
+    """No usable HTTP response at all: refused, timed out, or a socket error."""
+
+
+class MalformedResponseError(ModelError):
+    """HTTP 200 arrived, but the body was not the JSON shape we were promised."""
+
+
+class ContextTooLargeError(ModelError):
+    """The prompt exceeds the chosen provider's context limit (HTTP 400
+    with code context_length_exceeded). The fix is a bigger provider
+    or a smaller prompt -- never a retry."""
+
+
+class ProviderUnavailableError(ModelError):
+    """The chosen provider could not be reached at all. Raised instead
+    of silently falling back: a fallback is a policy decision, and
+    policies belong to the caller, in the open."""
+
+
+def _parse_retry_after(value):
+    if value is None:
+        return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        pass
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+class ModelClient:
+    """Speak to any endpoint that accepts chat-completions shaped JSON."""
+
+    def __init__(self, base_url, api_key=None, timeout_s=10.0, debug=False, max_retries=3):
+        self.base_url = base_url.rstrip("/")
+        if api_key is None:
+            api_key = os.environ.get("INBOX_API_KEY")
+        self.api_key = api_key
+        self.timeout_s = timeout_s
+        self.debug = debug
+        self.max_retries = max_retries
+        self.last_usage = None
+
+    def _debug(self, text):
+        if self.debug:
+            print(text, file=sys.stderr)
+
+    def _post_chat(self, payload):
+        """Send one POST and return (status, headers_dict, body_text)."""
+        url = self.base_url + "/v1/chat/completions"
+        parts = urllib.parse.urlparse(url)
+        path = parts.path
+        if parts.query:
+            path = path + "?" + parts.query
+        body = json.dumps(payload).encode("utf-8")
+        headers = {"Content-Type": "application/json"}
+        if self.api_key:
+            headers["Authorization"] = "Bearer " + self.api_key
+
+        shown = dict(headers)
+        if "Authorization" in shown:
+            shown["Authorization"] = "Bearer ***REDACTED***"
+        self._debug(">>> POST " + path)
+        self._debug(">>> headers: " + json.dumps(shown, sort_keys=True))
+        self._debug(">>> body: " + body.decode("utf-8"))
+
+        if parts.scheme == "https":
+            conn = http.client.HTTPSConnection(
+                parts.hostname, parts.port or 443, timeout=self.timeout_s
+            )
+        else:
+            conn = http.client.HTTPConnection(
+                parts.hostname, parts.port or 80, timeout=self.timeout_s
+            )
+        try:
+            conn.request("POST", path, body=body, headers=headers)
+            response = conn.getresponse()
+            raw = response.read()
+            status = response.status
+            resp_headers = {k.lower(): v for k, v in response.getheaders()}
+        except (OSError, http.client.HTTPException) as exc:
+            raise NetworkError("network error talking to " + self.base_url + ": " + str(exc)) from exc
+        finally:
+            conn.close()
+
+        text = raw.decode("utf-8", errors="replace")
+        self._debug("<<< status: " + str(status))
+        self._debug("<<< body: " + text)
+        return status, resp_headers, text
+
+    def _chat_once(self, messages, model, temperature):
+        payload = {"model": model, "messages": messages, "temperature": temperature}
+        status, headers, text = self._post_chat(payload)
+
+        if status == 200:
+            try:
+                data = json.loads(text)
+                content = data["choices"][0]["message"]["content"]
+                if not isinstance(content, str):
+                    raise TypeError("content is not a string")
+            except (ValueError, KeyError, IndexError, TypeError) as exc:
+                raise MalformedResponseError(
+                    "200 response was not the expected chat-completion JSON: " + str(exc)
+                ) from exc
+            usage = data.get("usage")
+            self.last_usage = usage if isinstance(usage, dict) else {}
+            return content
+        if status == 400:
+            raise BadRequestError("400 bad request: " + text[:200])
+        if status in (401, 403):
+            raise AuthError(str(status) + " authentication failed: " + text[:200])
+        if status == 429:
+            raise RateLimitError(
+                "429 rate limited: " + text[:200],
+                retry_after=_parse_retry_after(headers.get("retry-after")),
+            )
+        if 500 <= status <= 599:
+            raise ServerError(str(status) + " server error: " + text[:200])
+        raise ModelError("unexpected HTTP status " + str(status) + ": " + text[:200])
+
+    def chat(self, messages, model="inbox-1", temperature=0.2):
+        """Send ``messages``; retry transient failures; return reply text."""
+        backoff = 0.5
+        attempts = 0
+        while True:
+            try:
+                return self._chat_once(messages, model, temperature)
+            except (RateLimitError, ServerError) as exc:
+                if attempts >= self.max_retries:
+                    raise
+                delay = backoff
+                if isinstance(exc, RateLimitError) and exc.retry_after is not None:
+                    delay = max(delay, float(exc.retry_after))
+                self._debug(
+                    "<<< retry " + str(attempts + 1) + " in " + str(delay) + "s after "
+                    + type(exc).__name__
+                )
+                time.sleep(delay)
+                backoff *= 2
+                attempts += 1
+
+
+# ---------------------------------------------------------------------
+# Lesson 1.02: providers as data, one interface over the table.
+# Prices are US dollars per million tokens, input and output priced
+# separately, mirroring the mock servers' published tables exactly.
+# ---------------------------------------------------------------------
+
+PROVIDERS = {
+    "sprout": {
+        "base_url": "http://127.0.0.1:8771",
+        "model": "sprout-1",
+        "key_env": "SPROUT_API_KEY",
+        "price_in_per_mtok": 0.15,
+        "price_out_per_mtok": 0.30,
+        "context_tokens": 600,
+    },
+    "atlas": {
+        "base_url": "http://127.0.0.1:8772",
+        "model": "atlas-1",
+        "key_env": "ATLAS_API_KEY",
+        "price_in_per_mtok": 0.80,
+        "price_out_per_mtok": 1.60,
+        "context_tokens": 4000,
+    },
+    "oracle": {
+        "base_url": "http://127.0.0.1:8773",
+        "model": "oracle-1",
+        "key_env": "ORACLE_API_KEY",
+        "price_in_per_mtok": 5.00,
+        "price_out_per_mtok": 15.00,
+        "context_tokens": 20000,
+    },
+}
+
+
+def cost_usd(usage, provider_name):
+    """Dollars for one exchange: the usage counts, priced by the table.
+
+    (prompt_tokens x input price + completion_tokens x output price)
+    / 1,000,000 -- prices are per million tokens.
+    """
+    row = PROVIDERS[provider_name]
+    return (
+        usage.get("prompt_tokens", 0) * row["price_in_per_mtok"]
+        + usage.get("completion_tokens", 0) * row["price_out_per_mtok"]
+    ) / 1_000_000
+
+
+class ProviderClient(ModelClient):
+    """A ModelClient bound to one row of PROVIDERS.
+
+    ``chat(messages)`` needs no model argument -- the provider choice
+    carries it. After a successful call, ``last_usage`` (from
+    ModelClient), ``last_cost_usd`` and ``last_elapsed_s`` describe
+    what the call consumed, in tokens, dollars and seconds.
+    """
+
+    def __init__(self, provider_name, timeout_s=10.0, debug=False, max_retries=3):
+        if provider_name not in PROVIDERS:
+            raise ValueError(
+                "unknown provider " + repr(provider_name)
+                + "; known: " + ", ".join(sorted(PROVIDERS))
+            )
+        row = PROVIDERS[provider_name]
+        self.provider_name = provider_name
+        self.provider = row
+        self.model = row["model"]
+        api_key = os.environ.get(row["key_env"]) or "local-dev-key"
+        super().__init__(
+            row["base_url"],
+            api_key=api_key,
+            timeout_s=timeout_s,
+            debug=debug,
+            max_retries=max_retries,
+        )
+        self.last_cost_usd = None
+        self.last_elapsed_s = None
+
+    def chat(self, messages, temperature=0.2):
+        start = time.perf_counter()
+        try:
+            text = super().chat(messages, model=self.model, temperature=temperature)
+        except BadRequestError as exc:
+            if "context_length_exceeded" in str(exc):
+                raise ContextTooLargeError(
+                    "provider " + self.provider_name + " (" + self.model + ") "
+                    "rejected the prompt: " + str(exc)
+                ) from exc
+            raise
+        except NetworkError as exc:
+            raise ProviderUnavailableError(
+                "provider " + self.provider_name + " (" + self.model + ") "
+                "unavailable: " + str(exc)
+            ) from exc
+        self.last_elapsed_s = time.perf_counter() - start
+        self.last_cost_usd = cost_usd(self.last_usage or {}, self.provider_name)
+        return text

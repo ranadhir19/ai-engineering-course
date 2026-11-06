@@ -1,0 +1,198 @@
+{
+ "about": "Exercise 1.08 set: 16 raw replies as data, each with its gold record. Summaries are graded on the printed key phrase; all other fields exact. Three replies must be rejected (a missing required key, an enum synonym, a truncated reply); the bars price that in yield.",
+ "schema": "record@1.0.0",
+ "cases": [
+  {
+   "id": "exr-01",
+   "reply": "{\n \"label\": \"action\",\n \"priority\": \"high\",\n \"summary\": \"Sign the hosting renewal before Friday.\",\n \"reply_needed\": true,\n \"due\": \"2026-11-13\"\n}",
+   "gold": {
+    "label": "action",
+    "priority": "high",
+    "summary": "Sign the hosting renewal before Friday.",
+    "reply_needed": true,
+    "due": "2026-11-13"
+   },
+   "summary_key": "hosting renewal"
+  },
+  {
+   "id": "exr-02",
+   "reply": "```json\n{\n \"label\": \"fyi\",\n \"priority\": \"low\",\n \"summary\": \"Release notes for the November update.\",\n \"reply_needed\": false,\n \"due\": null\n}\n```",
+   "gold": {
+    "label": "fyi",
+    "priority": "low",
+    "summary": "Release notes for the November update.",
+    "reply_needed": false,
+    "due": null
+   },
+   "summary_key": "release notes"
+  },
+  {
+   "id": "exr-03",
+   "reply": "Here is the record for this email:\n{\n \"label\": \"reply\",\n \"priority\": \"normal\",\n \"summary\": \"Asked whether the workshop has a waitlist.\",\n \"reply_needed\": true,\n \"due\": null\n}\nLet me know if you need anything else.",
+   "gold": {
+    "label": "reply",
+    "priority": "normal",
+    "summary": "Asked whether the workshop has a waitlist.",
+    "reply_needed": true,
+    "due": null
+   },
+   "summary_key": "waitlist"
+  },
+  {
+   "id": "exr-04",
+   "reply": "{\n \"label\": \"archive\",\n \"priority\": \"low\",\n \"summary\": \"Receipt for the team lunch order.\",\n \"reply_needed\": false,\n \"due\": null,\n}",
+   "gold": {
+    "label": "archive",
+    "priority": "low",
+    "summary": "Receipt for the team lunch order.",
+    "reply_needed": false,
+    "due": null
+   },
+   "summary_key": "lunch order"
+  },
+  {
+   "id": "exr-05",
+   "reply": "{'label': 'fyi', 'priority': 'normal', 'summary': 'Sprint review moved to the big room.', 'reply_needed': False, 'due': None}",
+   "gold": {
+    "label": "fyi",
+    "priority": "normal",
+    "summary": "Sprint review moved to the big room.",
+    "reply_needed": false,
+    "due": null
+   },
+   "summary_key": "sprint review"
+  },
+  {
+   "id": "exr-06",
+   "reply": "{\n \"label\": \"action\",\n \"priority\": \"normal\",\n \"summary\": \"Book the courier for the signed contracts.\",\n \"reply_needed\": \"yes\",\n \"due\": \"2026-11-17\"\n}",
+   "gold": {
+    "label": "action",
+    "priority": "normal",
+    "summary": "Book the courier for the signed contracts.",
+    "reply_needed": true,
+    "due": "2026-11-17"
+   },
+   "summary_key": "courier"
+  },
+  {
+   "id": "exr-07",
+   "reply": "{\n \"label\": \"reply\",\n \"priority\": \"normal\",\n \"summary\": \"Send comments on the hiring plan by November 25.\",\n \"reply_needed\": true,\n \"due\": \"November 25, 2026\"\n}",
+   "gold": {
+    "label": "reply",
+    "priority": "normal",
+    "summary": "Send comments on the hiring plan by November 25.",
+    "reply_needed": true,
+    "due": "2026-11-25"
+   },
+   "summary_key": "hiring plan"
+  },
+  {
+   "id": "exr-08",
+   "reply": "{\n \"label\": \"action\",\n \"priority\": \"high\",\n \"summary\": \"Escalate the stuck migration to the vendor.\",\n \"reply_needed\": true,\n \"due\": \"2026-11-10\",\n \"confidence\": 0.92\n}",
+   "gold": {
+    "label": "action",
+    "priority": "high",
+    "summary": "Escalate the stuck migration to the vendor.",
+    "reply_needed": true,
+    "due": "2026-11-10"
+   },
+   "summary_key": "migration"
+  },
+  {
+   "id": "exr-09",
+   "reply": "{\n \"label\": \"Reply\",\n \"priority\": \"NORMAL\",\n \"summary\": \"Asked for the deck from Tuesday's demo.\",\n \"reply_needed\": true,\n \"due\": null\n}",
+   "gold": {
+    "label": "reply",
+    "priority": "normal",
+    "summary": "Asked for the deck from Tuesday's demo.",
+    "reply_needed": true,
+    "due": null
+   },
+   "summary_key": "deck"
+  },
+  {
+   "id": "exr-10",
+   "reply": "{\n \"label\": \"fyi\",\n \"priority\": \"normal\",\n \"summary\": \"Catering order confirmed for launch day.\",\n \"reply_needed\": false\n}",
+   "gold": {
+    "label": "fyi",
+    "priority": "normal",
+    "summary": "Catering order confirmed for launch day.",
+    "reply_needed": false,
+    "due": null
+   },
+   "summary_key": "catering order"
+  },
+  {
+   "id": "exr-11",
+   "reply": "{\n \"label\": \"action\",\n \"priority\": \"medium\",\n \"summary\": \"Book the training room for next week.\",\n \"reply_needed\": true,\n \"due\": \"2026-11-16\"\n}",
+   "gold": {
+    "label": "action",
+    "priority": "normal",
+    "summary": "Book the training room for next week.",
+    "reply_needed": true,
+    "due": "2026-11-16"
+   },
+   "summary_key": "training room"
+  },
+  {
+   "id": "exr-12",
+   "reply": "{\n \"label\": \"action\",\n \"priority\": \"high\",\n \"summary\": \"Production database backup failed over",
+   "gold": {
+    "label": "action",
+    "priority": "high",
+    "summary": "Production database backup failed overnight; rerun it.",
+    "reply_needed": true,
+    "due": "2026-11-07"
+   },
+   "summary_key": "backup failed"
+  },
+  {
+   "id": "exr-13",
+   "reply": "{\n \"label\": \"fyi\",\n \"priority\": \"normal\",\n \"summary\": \"Asked whether the invoice was paid.\",\n \"reply_needed\": true,\n \"due\": null\n}",
+   "gold": {
+    "label": "reply",
+    "priority": "normal",
+    "summary": "Asked whether the invoice was paid.",
+    "reply_needed": true,
+    "due": null
+   },
+   "summary_key": "invoice was paid"
+  },
+  {
+   "id": "exr-14",
+   "reply": "```json\n{\n \"label\": \"archive\",\n \"priority\": \"low\",\n \"summary\": \"Old thread about the 2025 offsite, for the archive.\",\n \"reply_needed\": false,\n \"due\": null,\n}\n```",
+   "gold": {
+    "label": "archive",
+    "priority": "low",
+    "summary": "Old thread about the 2025 offsite, for the archive.",
+    "reply_needed": false,
+    "due": null
+   },
+   "summary_key": "offsite"
+  },
+  {
+   "id": "exr-15",
+   "reply": "Here is the record for this email:\n{\n \"label\": \"fyi\",\n \"priority\": \"low\",\n \"summary\": \"Office playlist updated for the season.\",\n \"reply_needed\": \"no\",\n \"due\": null\n}\nLet me know if you need anything else.",
+   "gold": {
+    "label": "fyi",
+    "priority": "low",
+    "summary": "Office playlist updated for the season.",
+    "reply_needed": false,
+    "due": null
+   },
+   "summary_key": "playlist"
+  },
+  {
+   "id": "exr-16",
+   "reply": "{\n \"label\": \"action\",\n \"priority\": \"normal\",\n \"summary\": \"Approve the catering quote for launch day.\",\n \"reply_needed\": true,\n \"due\": \"2026-11-19\"\n}",
+   "gold": {
+    "label": "action",
+    "priority": "normal",
+    "summary": "Approve the catering quote for launch day.",
+    "reply_needed": true,
+    "due": "2026-11-19"
+   },
+   "summary_key": "catering quote"
+  }
+ ]
+}

@@ -1,0 +1,667 @@
+[
+  {
+    "id": "plain",
+    "family": "control",
+    "question": "When does Project Aurora launch?",
+    "key_phrases": [
+      "will launch"
+    ],
+    "value_kind": "date",
+    "gold": "November 18",
+    "note": "The control: nothing is contested and everything fits. Any assembler that fails this one has a bug, not a policy.",
+    "budget_tokens": 1600,
+    "examples": [
+      {
+        "id": "ex-library",
+        "question": "From: Library\nSubject: New books this month\n\nThe library has new books on gardening, chess, and local history. The reading room opens at 9 am on weekdays.",
+        "answer": "Sender: Library. Topic: announcement. Action: none."
+      },
+      {
+        "id": "ex-falcon",
+        "question": "From: Priya\nSubject: Falcon sync moved\n\nThe Falcon sync is now on Friday at 3 pm in Room 9. Please bring the test notes.",
+        "answer": "Sender: Priya. Topic: meeting. Action: none."
+      },
+      {
+        "id": "ex-parcel",
+        "question": "From: Mail Room\nSubject: Parcel arrived\n\nA parcel for the art class arrived this morning. It is on the shelf by the door.",
+        "answer": "Sender: Mail Room. Topic: delivery. Action: none."
+      }
+    ],
+    "documents": [
+      {
+        "id": "doc-launch",
+        "name": "launch announcement",
+        "text": "From: Team Updates\nSubject: Aurora launch date\n\nHi all, Project Aurora will launch on Wednesday, November 18, 2026, at our Jacksonville office. The launch rehearsal is on November 14, 2026, and the support rota starts on launch morning. Please hold questions about the launch date until the rehearsal notes are out."
+      }
+    ],
+    "history": [
+      {
+        "id": "h1",
+        "role": "user",
+        "text": "Please keep track of Project Aurora for me."
+      },
+      {
+        "id": "h2",
+        "role": "assistant",
+        "text": "Will do -- I have the announcement in front of me."
+      }
+    ]
+  },
+  {
+    "id": "correction",
+    "family": "freshness",
+    "question": "When does Project Aurora launch?",
+    "key_phrases": [
+      "will launch"
+    ],
+    "value_kind": "date",
+    "gold": "November 21",
+    "note": "The conversation corrected the document: the launch moved to November 21. Position decides -- the correction must speak after the announcement it corrects.",
+    "budget_tokens": 2000,
+    "examples": [
+      {
+        "id": "ex-library",
+        "question": "From: Library\nSubject: New books this month\n\nThe library has new books on gardening, chess, and local history. The reading room opens at 9 am on weekdays.",
+        "answer": "Sender: Library. Topic: announcement. Action: none."
+      },
+      {
+        "id": "ex-falcon",
+        "question": "From: Priya\nSubject: Falcon sync moved\n\nThe Falcon sync is now on Friday at 3 pm in Room 9. Please bring the test notes.",
+        "answer": "Sender: Priya. Topic: meeting. Action: none."
+      },
+      {
+        "id": "ex-parcel",
+        "question": "From: Mail Room\nSubject: Parcel arrived\n\nA parcel for the art class arrived this morning. It is on the shelf by the door.",
+        "answer": "Sender: Mail Room. Topic: delivery. Action: none."
+      }
+    ],
+    "documents": [
+      {
+        "id": "doc-launch",
+        "name": "launch announcement",
+        "text": "From: Team Updates\nSubject: Aurora launch date\n\nHi all, Project Aurora will launch on Wednesday, November 18, 2026, at our Jacksonville office. The launch rehearsal is on November 14, 2026, and the support rota starts on launch morning. Please hold questions about the launch date until the rehearsal notes are out."
+      }
+    ],
+    "history": [
+      {
+        "id": "h1",
+        "role": "user",
+        "text": "Morning. Can you keep track of the Aurora launch for me?"
+      },
+      {
+        "id": "h2",
+        "role": "assistant",
+        "text": "Of course. Project Aurora will launch on November 18, 2026, as announced."
+      },
+      {
+        "id": "h3",
+        "role": "user",
+        "text": "By the way, the coffee machine on our floor is making a strange noise again. It rattles when it grinds, and the light blinks twice before it starts. Someone from facilities said they would look at it this week, but nobody has shown up yet."
+      },
+      {
+        "id": "h4",
+        "role": "user",
+        "text": "Correction from the team: the launch has moved. Project Aurora will launch on November 21, 2026. The rehearsal stays on November 14, 2026."
+      },
+      {
+        "id": "h5",
+        "role": "assistant",
+        "text": "Noted -- launch November 21, rehearsal November 14."
+      },
+      {
+        "id": "h6",
+        "role": "user",
+        "text": "Unrelated, but the parking lot was completely full this morning. I circled twice before I found a spot near the far fence. The shuttle driver said the overflow lot opens when the main one fills, which would have been good to know earlier."
+      }
+    ]
+  },
+  {
+    "id": "overflow",
+    "family": "pressure",
+    "question": "What is the catering budget for the launch?",
+    "key_phrases": [
+      "catering"
+    ],
+    "value_kind": "money",
+    "gold": "I don't know",
+    "note": "The window overflows and the question was never answered anywhere. A careless trimmer cuts the standing instruction and the model invents a catering figure from its priors; the policy sheds by claim and the instruction survives.",
+    "budget_tokens": 300,
+    "examples": [
+      {
+        "id": "ex-library",
+        "question": "From: Library\nSubject: New books this month\n\nThe library has new books on gardening, chess, and local history. The reading room opens at 9 am on weekdays.",
+        "answer": "Sender: Library. Topic: announcement. Action: none."
+      },
+      {
+        "id": "ex-falcon",
+        "question": "From: Priya\nSubject: Falcon sync moved\n\nThe Falcon sync is now on Friday at 3 pm in Room 9. Please bring the test notes.",
+        "answer": "Sender: Priya. Topic: meeting. Action: none."
+      },
+      {
+        "id": "ex-parcel",
+        "question": "From: Mail Room\nSubject: Parcel arrived\n\nA parcel for the art class arrived this morning. It is on the shelf by the door.",
+        "answer": "Sender: Mail Room. Topic: delivery. Action: none."
+      }
+    ],
+    "documents": [
+      {
+        "id": "doc-launch",
+        "name": "launch announcement",
+        "text": "From: Team Updates\nSubject: Aurora launch date\n\nHi all, Project Aurora will launch on Wednesday, November 18, 2026, at our Jacksonville office. The launch rehearsal is on November 14, 2026, and the support rota starts on launch morning. Please hold questions about the launch date until the rehearsal notes are out."
+      },
+      {
+        "id": "doc-review",
+        "name": "design review invite",
+        "text": "From: Ops\nSubject: Design review meeting\n\nReminder: the design review meeting is on Thursday at 2 pm in Room 4B. It was originally planned for Wednesday morning. Please update your calendar for the design review time and bring the latest mockups."
+      },
+      {
+        "id": "doc-digest",
+        "name": "support digest",
+        "text": "From: Support\nSubject: Weekly support digest\n\nThis week the support desk answered questions about password resets, printer access, the VPN rollout, and the new help pages. The most common topic was the office move, and the team wrote a short guide about desk bookings, meeting etiquette, badge photos, and the kitchen rota. Response times improved again. The digest also covers the training calendar, the buddy scheme for new joiners, the lost property box, and the survey about Friday hours. Next week the desk will publish the holiday rota and the updated guide to booking focus rooms, plus a note about the budget for office supplies and the catering rota for the training days."
+      },
+      {
+        "id": "doc-party",
+        "name": "launch party plan",
+        "text": "From: Social Committee\nSubject: Launch party\n\nThe launch party is booked for the Friday after the launch, in the courtyard. The party budget is 3000 dollars for food and music. Volunteers for setup should arrive an hour early. There will be a short speech from the team lead and a group photo on the steps. Please tell the committee about allergies before Wednesday so the menu can be adjusted, and bring your badge for the raffle at the end."
+      }
+    ],
+    "history": [
+      {
+        "id": "h1",
+        "role": "user",
+        "text": "By the way, the coffee machine on our floor is making a strange noise again. It rattles when it grinds, and the light blinks twice before it starts. Someone from facilities said they would look at it this week, but nobody has shown up yet."
+      },
+      {
+        "id": "h2",
+        "role": "assistant",
+        "text": "Unrelated, but the parking lot was completely full this morning. I circled twice before I found a spot near the far fence. The shuttle driver said the overflow lot opens when the main one fills, which would have been good to know earlier."
+      },
+      {
+        "id": "h3",
+        "role": "user",
+        "text": "Also, the plant by the window in the break room is looking much better since people started watering it in turns. The leaves are green again and there is a new shoot near the top. Small wins, honestly."
+      },
+      {
+        "id": "h4",
+        "role": "assistant",
+        "text": "One more thing: the elevator has new music and it is oddly cheerful now. Half the floor hummed it in the kitchen this morning. It gets stuck in your head for hours, which is either a feature or a bug depending on your mood."
+      },
+      {
+        "id": "h5",
+        "role": "user",
+        "text": "By the way, the coffee machine on our floor is making a strange noise again. It rattles when it grinds, and the light blinks twice before it starts. Someone from facilities said they would look at it this week, but nobody has shown up yet."
+      },
+      {
+        "id": "h6",
+        "role": "assistant",
+        "text": "Unrelated, but the parking lot was completely full this morning. I circled twice before I found a spot near the far fence. The shuttle driver said the overflow lot opens when the main one fills, which would have been good to know earlier."
+      },
+      {
+        "id": "h7",
+        "role": "user",
+        "text": "Also, the plant by the window in the break room is looking much better since people started watering it in turns. The leaves are green again and there is a new shoot near the top. Small wins, honestly."
+      },
+      {
+        "id": "h8",
+        "role": "assistant",
+        "text": "One more thing: the elevator has new music and it is oddly cheerful now. Half the floor hummed it in the kitchen this morning. It gets stuck in your head for hours, which is either a feature or a bug depending on your mood."
+      },
+      {
+        "id": "h9",
+        "role": "user",
+        "text": "By the way, the coffee machine on our floor is making a strange noise again. It rattles when it grinds, and the light blinks twice before it starts. Someone from facilities said they would look at it this week, but nobody has shown up yet."
+      },
+      {
+        "id": "h10",
+        "role": "assistant",
+        "text": "Unrelated, but the parking lot was completely full this morning. I circled twice before I found a spot near the far fence. The shuttle driver said the overflow lot opens when the main one fills, which would have been good to know earlier."
+      }
+    ]
+  },
+  {
+    "id": "needle",
+    "family": "compaction",
+    "question": "When is the launch rehearsal?",
+    "key_phrases": [
+      "rehearsal"
+    ],
+    "value_kind": "date",
+    "gold": "November 14",
+    "note": "The rehearsal date lives only in the oldest turn, buried under chatter. Dropping the oldest loses it; compaction keeps the one dated sentence and sheds the rest.",
+    "budget_tokens": 1100,
+    "examples": [
+      {
+        "id": "ex-library",
+        "question": "From: Library\nSubject: New books this month\n\nThe library has new books on gardening, chess, and local history. The reading room opens at 9 am on weekdays.",
+        "answer": "Sender: Library. Topic: announcement. Action: none."
+      },
+      {
+        "id": "ex-falcon",
+        "question": "From: Priya\nSubject: Falcon sync moved\n\nThe Falcon sync is now on Friday at 3 pm in Room 9. Please bring the test notes.",
+        "answer": "Sender: Priya. Topic: meeting. Action: none."
+      },
+      {
+        "id": "ex-parcel",
+        "question": "From: Mail Room\nSubject: Parcel arrived\n\nA parcel for the art class arrived this morning. It is on the shelf by the door.",
+        "answer": "Sender: Mail Room. Topic: delivery. Action: none."
+      }
+    ],
+    "documents": [
+      {
+        "id": "doc-party",
+        "name": "launch party plan",
+        "text": "From: Social Committee\nSubject: Launch party\n\nThe launch party is booked for the Friday after the launch, in the courtyard. The party budget is 3000 dollars for food and music. Volunteers for setup should arrive an hour early. There will be a short speech from the team lead and a group photo on the steps. Please tell the committee about allergies before Wednesday so the menu can be adjusted, and bring your badge for the raffle at the end."
+      }
+    ],
+    "history": [
+      {
+        "id": "h1",
+        "role": "user",
+        "text": "One thing to remember from the kickoff: the launch rehearsal is on November 14, 2026. Everything else is in the announcement."
+      },
+      {
+        "id": "h2",
+        "role": "user",
+        "text": "By the way, the coffee machine on our floor is making a strange noise again. It rattles when it grinds, and the light blinks twice before it starts. Someone from facilities said they would look at it this week, but nobody has shown up yet."
+      },
+      {
+        "id": "h3",
+        "role": "assistant",
+        "text": "Unrelated, but the parking lot was completely full this morning. I circled twice before I found a spot near the far fence. The shuttle driver said the overflow lot opens when the main one fills, which would have been good to know earlier."
+      },
+      {
+        "id": "h4",
+        "role": "user",
+        "text": "Also, the plant by the window in the break room is looking much better since people started watering it in turns. The leaves are green again and there is a new shoot near the top. Small wins, honestly."
+      },
+      {
+        "id": "h5",
+        "role": "assistant",
+        "text": "One more thing: the elevator has new music and it is oddly cheerful now. Half the floor hummed it in the kitchen this morning. It gets stuck in your head for hours, which is either a feature or a bug depending on your mood."
+      },
+      {
+        "id": "h6",
+        "role": "user",
+        "text": "By the way, the coffee machine on our floor is making a strange noise again. It rattles when it grinds, and the light blinks twice before it starts. Someone from facilities said they would look at it this week, but nobody has shown up yet."
+      },
+      {
+        "id": "h7",
+        "role": "assistant",
+        "text": "Unrelated, but the parking lot was completely full this morning. I circled twice before I found a spot near the far fence. The shuttle driver said the overflow lot opens when the main one fills, which would have been good to know earlier."
+      },
+      {
+        "id": "h8",
+        "role": "user",
+        "text": "Also, the plant by the window in the break room is looking much better since people started watering it in turns. The leaves are green again and there is a new shoot near the top. Small wins, honestly."
+      },
+      {
+        "id": "h9",
+        "role": "assistant",
+        "text": "One more thing: the elevator has new music and it is oddly cheerful now. Half the floor hummed it in the kitchen this morning. It gets stuck in your head for hours, which is either a feature or a bug depending on your mood."
+      }
+    ]
+  },
+  {
+    "id": "bloat",
+    "family": "retrieval",
+    "question": "What is the budget for Project Aurora?",
+    "key_phrases": [
+      "budget"
+    ],
+    "value_kind": "money",
+    "gold": "48000 dollars",
+    "note": "Five documents, two projects, three budget figures. Retrieval volume is not relevance: the ranking decides which source speaks last.",
+    "budget_tokens": 1400,
+    "examples": [
+      {
+        "id": "ex-library",
+        "question": "From: Library\nSubject: New books this month\n\nThe library has new books on gardening, chess, and local history. The reading room opens at 9 am on weekdays.",
+        "answer": "Sender: Library. Topic: announcement. Action: none."
+      },
+      {
+        "id": "ex-falcon",
+        "question": "From: Priya\nSubject: Falcon sync moved\n\nThe Falcon sync is now on Friday at 3 pm in Room 9. Please bring the test notes.",
+        "answer": "Sender: Priya. Topic: meeting. Action: none."
+      },
+      {
+        "id": "ex-parcel",
+        "question": "From: Mail Room\nSubject: Parcel arrived\n\nA parcel for the art class arrived this morning. It is on the shelf by the door.",
+        "answer": "Sender: Mail Room. Topic: delivery. Action: none."
+      }
+    ],
+    "documents": [
+      {
+        "id": "doc-beacon-launch",
+        "name": "beacon launch note",
+        "text": "From: Team Updates\nSubject: Project Beacon launch\n\nProject Beacon will launch on December 3, 2026. The Beacon launch is a smaller rollout with a different team and a separate announcement."
+      },
+      {
+        "id": "doc-venue",
+        "name": "venue note",
+        "text": "From: Facilities\nSubject: Launch venue\n\nThe Aurora launch venue is the main hall. Seating is arranged theatre style, and the stage faces the garden windows."
+      },
+      {
+        "id": "doc-approval",
+        "name": "budget approval",
+        "text": "From: Finance\nSubject: Budget approved for Aurora\n\nGood news: Finance has approved the budget of 48000 dollars for the inbox assistant project. The approved budget covers hosting and evaluation, and spending can start immediately. Please send budget receipts to Finance by Friday."
+      },
+      {
+        "id": "doc-press",
+        "name": "press note",
+        "text": "From: Comms\nSubject: Aurora press note\n\nThe press note for Project Aurora goes out on launch morning. It describes the product, the team, and the story behind the name Aurora."
+      },
+      {
+        "id": "doc-beacon-budget",
+        "name": "beacon budget note",
+        "text": "From: Finance\nSubject: Project Beacon budget\n\nThe budget for Project Beacon is 72000 dollars. The Beacon budget covers its own hosting and evaluation, separately from Aurora."
+      }
+    ],
+    "history": [
+      {
+        "id": "h1",
+        "role": "user",
+        "text": "There is a pile of documents about two projects today."
+      },
+      {
+        "id": "h2",
+        "role": "assistant",
+        "text": "I see Aurora and Beacon material in the pile."
+      },
+      {
+        "id": "h3",
+        "role": "user",
+        "text": "Also, the plant by the window in the break room is looking much better since people started watering it in turns. The leaves are green again and there is a new shoot near the top. Small wins, honestly."
+      }
+    ]
+  },
+  {
+    "id": "stale-doc",
+    "family": "freshness",
+    "question": "What is the approved budget for Project Aurora?",
+    "key_phrases": [
+      "budget"
+    ],
+    "value_kind": "money",
+    "gold": "48000 dollars",
+    "note": "Two documents, one stale figure. In pack order the vendor quote speaks last and wins; ranked by relevance, the approval speaks last.",
+    "budget_tokens": 1600,
+    "examples": [
+      {
+        "id": "ex-library",
+        "question": "From: Library\nSubject: New books this month\n\nThe library has new books on gardening, chess, and local history. The reading room opens at 9 am on weekdays.",
+        "answer": "Sender: Library. Topic: announcement. Action: none."
+      },
+      {
+        "id": "ex-falcon",
+        "question": "From: Priya\nSubject: Falcon sync moved\n\nThe Falcon sync is now on Friday at 3 pm in Room 9. Please bring the test notes.",
+        "answer": "Sender: Priya. Topic: meeting. Action: none."
+      },
+      {
+        "id": "ex-parcel",
+        "question": "From: Mail Room\nSubject: Parcel arrived\n\nA parcel for the art class arrived this morning. It is on the shelf by the door.",
+        "answer": "Sender: Mail Room. Topic: delivery. Action: none."
+      }
+    ],
+    "documents": [
+      {
+        "id": "doc-approval",
+        "name": "budget approval",
+        "text": "From: Finance\nSubject: Budget approved for Aurora\n\nGood news: Finance has approved the budget of 48000 dollars for the inbox assistant project. The approved budget covers hosting and evaluation, and spending can start immediately. Please send budget receipts to Finance by Friday."
+      },
+      {
+        "id": "doc-vendor",
+        "name": "vendor review",
+        "text": "From: Vendor Review\nSubject: Aurora tooling costs\n\nThe vendor review set the tooling budget at 45000 dollars for Project Aurora. That budget quote was given before the scope change and before Finance set the final budget for the project."
+      }
+    ],
+    "history": [
+      {
+        "id": "h1",
+        "role": "user",
+        "text": "Two finance documents arrived this week."
+      }
+    ]
+  },
+  {
+    "id": "abstain",
+    "family": "control",
+    "question": "What is the catering budget for the launch?",
+    "key_phrases": [
+      "catering"
+    ],
+    "value_kind": "money",
+    "gold": "I don't know",
+    "note": "The second control: the fact is absent and the window is comfortable. Both assemblers should abstain -- pressure is not required for honesty, and honesty here costs nothing.",
+    "budget_tokens": 1600,
+    "examples": [
+      {
+        "id": "ex-library",
+        "question": "From: Library\nSubject: New books this month\n\nThe library has new books on gardening, chess, and local history. The reading room opens at 9 am on weekdays.",
+        "answer": "Sender: Library. Topic: announcement. Action: none."
+      },
+      {
+        "id": "ex-falcon",
+        "question": "From: Priya\nSubject: Falcon sync moved\n\nThe Falcon sync is now on Friday at 3 pm in Room 9. Please bring the test notes.",
+        "answer": "Sender: Priya. Topic: meeting. Action: none."
+      },
+      {
+        "id": "ex-parcel",
+        "question": "From: Mail Room\nSubject: Parcel arrived\n\nA parcel for the art class arrived this morning. It is on the shelf by the door.",
+        "answer": "Sender: Mail Room. Topic: delivery. Action: none."
+      }
+    ],
+    "documents": [
+      {
+        "id": "doc-review",
+        "name": "design review invite",
+        "text": "From: Ops\nSubject: Design review meeting\n\nReminder: the design review meeting is on Thursday at 2 pm in Room 4B. It was originally planned for Wednesday morning. Please update your calendar for the design review time and bring the latest mockups."
+      }
+    ],
+    "history": [
+      {
+        "id": "h1",
+        "role": "user",
+        "text": "Anything new about the design review?"
+      },
+      {
+        "id": "h2",
+        "role": "assistant",
+        "text": "Only the invite in your documents."
+      }
+    ]
+  },
+  {
+    "id": "examples-cost",
+    "family": "pressure",
+    "question": "When does Project Aurora launch?",
+    "key_phrases": [
+      "will launch"
+    ],
+    "value_kind": "date",
+    "gold": "November 18",
+    "note": "Three worked examples cost more than the document that answers the question. Examples teach shape, not facts -- their claim on the window is capped, and the cap is what saves the budget.",
+    "budget_tokens": 850,
+    "examples": [
+      {
+        "id": "ex-long-1",
+        "question": "From: Reader 1\nSubject: conference travel\n\nI am writing with a long message about conference travel. The message goes into a great deal of detail about times, people, preferences, past conversations, side topics, and background that a summary has to wade through. The message goes into a great deal of detail about times, people, preferences, past conversations, side topics, and background that a summary has to wade through. The message goes into a great deal of detail about times, people, preferences, past conversations, side topics, and background that a summary has to wade through. The message goes into a great deal of detail about times, people, preferences, past conversations, side topics, and background that a summary has to wade through. Please file this under conference travel.",
+        "answer": "Sender: Reader 1. Topic: conference travel. Action: none."
+      },
+      {
+        "id": "ex-long-2",
+        "question": "From: Reader 2\nSubject: expense reports\n\nI am writing with a long message about expense reports. The message goes into a great deal of detail about times, people, preferences, past conversations, side topics, and background that a summary has to wade through. The message goes into a great deal of detail about times, people, preferences, past conversations, side topics, and background that a summary has to wade through. The message goes into a great deal of detail about times, people, preferences, past conversations, side topics, and background that a summary has to wade through. The message goes into a great deal of detail about times, people, preferences, past conversations, side topics, and background that a summary has to wade through. Please file this under expense reports.",
+        "answer": "Sender: Reader 2. Topic: expense reports. Action: none."
+      },
+      {
+        "id": "ex-long-3",
+        "question": "From: Reader 3\nSubject: holiday cover\n\nI am writing with a long message about holiday cover. The message goes into a great deal of detail about times, people, preferences, past conversations, side topics, and background that a summary has to wade through. The message goes into a great deal of detail about times, people, preferences, past conversations, side topics, and background that a summary has to wade through. The message goes into a great deal of detail about times, people, preferences, past conversations, side topics, and background that a summary has to wade through. The message goes into a great deal of detail about times, people, preferences, past conversations, side topics, and background that a summary has to wade through. Please file this under holiday cover.",
+        "answer": "Sender: Reader 3. Topic: holiday cover. Action: none."
+      }
+    ],
+    "documents": [
+      {
+        "id": "doc-launch",
+        "name": "launch announcement",
+        "text": "From: Team Updates\nSubject: Aurora launch date\n\nHi all, Project Aurora will launch on Wednesday, November 18, 2026, at our Jacksonville office. The launch rehearsal is on November 14, 2026, and the support rota starts on launch morning. Please hold questions about the launch date until the rehearsal notes are out."
+      }
+    ],
+    "history": [
+      {
+        "id": "h1",
+        "role": "user",
+        "text": "Quick question about the launch, please."
+      }
+    ]
+  },
+  {
+    "id": "room-move",
+    "family": "freshness",
+    "question": "Which room is the design review in?",
+    "key_phrases": [
+      "design review"
+    ],
+    "value_kind": "room",
+    "gold": "Room 2A",
+    "note": "The invite says Room 4B; the conversation moved the meeting to Room 2A, then buried the move under chatter. The move is one durable sentence -- compaction keeps it, position honours it.",
+    "budget_tokens": 1300,
+    "examples": [
+      {
+        "id": "ex-library",
+        "question": "From: Library\nSubject: New books this month\n\nThe library has new books on gardening, chess, and local history. The reading room opens at 9 am on weekdays.",
+        "answer": "Sender: Library. Topic: announcement. Action: none."
+      },
+      {
+        "id": "ex-falcon",
+        "question": "From: Priya\nSubject: Falcon sync moved\n\nThe Falcon sync is now on Friday at 3 pm in Room 9. Please bring the test notes.",
+        "answer": "Sender: Priya. Topic: meeting. Action: none."
+      },
+      {
+        "id": "ex-parcel",
+        "question": "From: Mail Room\nSubject: Parcel arrived\n\nA parcel for the art class arrived this morning. It is on the shelf by the door.",
+        "answer": "Sender: Mail Room. Topic: delivery. Action: none."
+      }
+    ],
+    "documents": [
+      {
+        "id": "doc-review",
+        "name": "design review invite",
+        "text": "From: Ops\nSubject: Design review meeting\n\nReminder: the design review meeting is on Thursday at 2 pm in Room 4B. It was originally planned for Wednesday morning. Please update your calendar for the design review time and bring the latest mockups."
+      }
+    ],
+    "history": [
+      {
+        "id": "h1",
+        "role": "user",
+        "text": "The design review is the meeting I care about this week."
+      },
+      {
+        "id": "h2",
+        "role": "assistant",
+        "text": "It is on Thursday at 2 pm in Room 4B, per the invite."
+      },
+      {
+        "id": "h3",
+        "role": "user",
+        "text": "By the way, the coffee machine on our floor is making a strange noise again. It rattles when it grinds, and the light blinks twice before it starts. Someone from facilities said they would look at it this week, but nobody has shown up yet."
+      },
+      {
+        "id": "h4",
+        "role": "user",
+        "text": "Unrelated, but the parking lot was completely full this morning. I circled twice before I found a spot near the far fence. The shuttle driver said the overflow lot opens when the main one fills, which would have been good to know earlier."
+      },
+      {
+        "id": "h5",
+        "role": "assistant",
+        "text": "One more thing: the elevator has new music and it is oddly cheerful now. Half the floor hummed it in the kitchen this morning. It gets stuck in your head for hours, which is either a feature or a bug depending on your mood."
+      },
+      {
+        "id": "h6",
+        "role": "user",
+        "text": "Update: the design review has moved to Room 2A. Same time, Thursday 2 pm."
+      },
+      {
+        "id": "h7",
+        "role": "assistant",
+        "text": "Room 2A for the design review -- noted."
+      },
+      {
+        "id": "h8",
+        "role": "user",
+        "text": "Also, the plant by the window in the break room is looking much better since people started watering it in turns. The leaves are green again and there is a new shoot near the top. Small wins, honestly."
+      }
+    ]
+  },
+  {
+    "id": "tight-fit",
+    "family": "pressure",
+    "question": "What is the budget for Project Aurora?",
+    "key_phrases": [
+      "budget"
+    ],
+    "value_kind": "money",
+    "gold": "48000 dollars",
+    "note": "Everything must shed something: the example cap bites, the decoy document is truncated, and even history's one durable line is shed when the room runs out -- but it is shed in the log, by name, which is the whole difference.",
+    "budget_tokens": 700,
+    "examples": [
+      {
+        "id": "ex-library",
+        "question": "From: Library\nSubject: New books this month\n\nThe library has new books on gardening, chess, and local history. The reading room opens at 9 am on weekdays.",
+        "answer": "Sender: Library. Topic: announcement. Action: none."
+      },
+      {
+        "id": "ex-falcon",
+        "question": "From: Priya\nSubject: Falcon sync moved\n\nThe Falcon sync is now on Friday at 3 pm in Room 9. Please bring the test notes.",
+        "answer": "Sender: Priya. Topic: meeting. Action: none."
+      },
+      {
+        "id": "ex-parcel",
+        "question": "From: Mail Room\nSubject: Parcel arrived\n\nA parcel for the art class arrived this morning. It is on the shelf by the door.",
+        "answer": "Sender: Mail Room. Topic: delivery. Action: none."
+      }
+    ],
+    "documents": [
+      {
+        "id": "doc-memo",
+        "name": "draft budget memo",
+        "text": "From: Planning\nSubject: Draft figures for Project Aurora\n\nThe draft budget for Project Aurora was 45000 dollars. This figure comes from the early planning draft and has not been approved. Treat it as a placeholder until Finance confirms the final number."
+      },
+      {
+        "id": "doc-approval",
+        "name": "budget approval",
+        "text": "From: Finance\nSubject: Budget approved for Aurora\n\nGood news: Finance has approved the budget of 48000 dollars for the inbox assistant project. The approved budget covers hosting and evaluation, and spending can start immediately. Please send budget receipts to Finance by Friday."
+      },
+      {
+        "id": "doc-party",
+        "name": "launch party plan",
+        "text": "From: Social Committee\nSubject: Launch party\n\nThe launch party is booked for the Friday after the launch, in the courtyard. The party budget is 3000 dollars for food and music. Volunteers for setup should arrive an hour early. There will be a short speech from the team lead and a group photo on the steps. Please tell the committee about allergies before Wednesday so the menu can be adjusted, and bring your badge for the raffle at the end."
+      }
+    ],
+    "history": [
+      {
+        "id": "h1",
+        "role": "user",
+        "text": "One more thing: the elevator has new music and it is oddly cheerful now. Half the floor hummed it in the kitchen this morning. It gets stuck in your head for hours, which is either a feature or a bug depending on your mood."
+      },
+      {
+        "id": "h2",
+        "role": "assistant",
+        "text": "Finance approved 48000 dollars for Aurora -- noted."
+      },
+      {
+        "id": "h3",
+        "role": "user",
+        "text": "By the way, the coffee machine on our floor is making a strange noise again. It rattles when it grinds, and the light blinks twice before it starts. Someone from facilities said they would look at it this week, but nobody has shown up yet."
+      },
+      {
+        "id": "h4",
+        "role": "assistant",
+        "text": "Unrelated, but the parking lot was completely full this morning. I circled twice before I found a spot near the far fence. The shuttle driver said the overflow lot opens when the main one fills, which would have been good to know earlier."
+      },
+      {
+        "id": "h5",
+        "role": "user",
+        "text": "Also, the plant by the window in the break room is looking much better since people started watering it in turns. The leaves are green again and there is a new shoot near the top. Small wins, honestly."
+      }
+    ]
+  }
+]

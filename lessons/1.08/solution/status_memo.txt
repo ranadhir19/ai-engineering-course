@@ -1,0 +1,14 @@
+Status Memo: Inbox Assistant, week of November 2, 2026
+From: Product workstream. To: all workstream leads.
+
+Build status
+The model client passed the failure harness in full this week: all seven scenarios, including the rate-limit and slow-server cases. The provider comparison is now running against three configurations, and the cost log is recording token usage and price for every call. The evaluation harness draft is with the Quality workstream for review.
+
+Schedule
+The rehearsal remains on November 14 and the launch remains on Wednesday, November 18. The vendor review is the one date outside our control. It is currently booked for November 9. If the vendor review slips by two weeks, the public launch moves from November 18 to December 2, because the rehearsal cannot be certified against an unreviewed vendor build, and the support rota would move with it. A slip of a few days can be absorbed; a slip of two weeks cannot.
+
+Decisions needed
+Finance asked whether the budget line for model usage should be reviewed monthly or weekly. The recommendation from the Platform workstream is weekly, because a routing change can double or halve the spend between two monthly reviews without any change in traffic. The Data workstream asked for a decision on retention: raw messages kept for ninety days, indexed text for one year. Both decisions are due at the Friday build review.
+
+Open risks
+Two answer-quality issues were found in the golden set this week. In both cases the assistant quoted a real sentence that did not answer the question asked, because the sentence shared keywords with the question. The Quality workstream is adding a relevance check to the evaluation harness before launch.

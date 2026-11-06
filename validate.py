@@ -19,7 +19,9 @@ Checks:
      solution assembler (its default target).
   8. The lesson 1.07 sampling harness passes against the exercise
      solution settings (its default target).
-  9. Every existing lesson folder has starter/, solution/, exercise/
+  9. The lesson 1.08 records harness passes against the exercise
+     solution extractor (its default target).
+ 10. Every existing lesson folder has starter/, solution/, exercise/
      and a README.md.
 
 Prints PASS/FAIL per check and exits non-zero on any failure.
@@ -211,6 +213,28 @@ def check_harness_107():
         print(result.stderr, file=sys.stderr)
 
 
+def check_harness_108():
+    harness = os.path.join(ROOT, "lessons", "1.08", "exercise", "records_harness.py")
+    if not os.path.isfile(harness):
+        report(False, "lesson 1.08 records harness", "missing: " + harness)
+        return
+    result = subprocess.run(
+        [sys.executable, harness],
+        capture_output=True,
+        text=True,
+        timeout=300,
+    )
+    tail = (result.stdout.strip().splitlines() or [""])[-1]
+    report(
+        result.returncode == 0,
+        "lessons/1.08 exercise records_harness (exercise solution extractor)",
+        "exit=" + str(result.returncode) + " " + tail,
+    )
+    if result.returncode != 0:
+        print(result.stdout)
+        print(result.stderr, file=sys.stderr)
+
+
 def check_lesson_structure():
     lessons_dir = os.path.join(ROOT, "lessons")
     lesson_folders = []
@@ -245,6 +269,7 @@ def main():
     check_harness_105()
     check_harness_106()
     check_harness_107()
+    check_harness_108()
     check_lesson_structure()
     if FAILURES:
         print("OVERALL: FAIL (" + str(len(FAILURES)) + " check(s) failed)")
