@@ -1,0 +1,375 @@
+{
+ "about": "Exercise 1.09: sixteen tasks whose proposed calls arrive as data (emitted by the same lab rules as the lesson). There is no model to hand errors back to: the dispatcher must validate every call before executing any of them, execute the valid, and refuse the rest by name. Golds are end states -- labels exactly, drafts byte for byte, facts in the returned results.",
+ "tasks": [
+  {
+   "id": "ex-01",
+   "instruction": "File the product digest as archive.",
+   "calls": [
+    {
+     "name": "apply_label",
+     "args": {
+      "message_id": "rec-02",
+      "label": "archive"
+     }
+    }
+   ],
+   "gold": {
+    "labels": {
+     "rec-02": "archive"
+    }
+   }
+  },
+  {
+   "id": "ex-02",
+   "instruction": "File the platform sync minutes as fyi.",
+   "calls": [
+    {
+     "name": "apply_label",
+     "args": {
+      "message_id": "rec-05",
+      "label": "fyi"
+     }
+    }
+   ],
+   "gold": {
+    "labels": {
+     "rec-05": "fyi"
+    }
+   }
+  },
+  {
+   "id": "ex-03",
+   "instruction": "Draft the design-review answer to Ana.",
+   "calls": [
+    {
+     "name": "draft_reply",
+     "args": {
+      "message_id": "rec-03",
+      "body": "The design review starts at 10:00 on Thursday, in Room 2A."
+     }
+    }
+   ],
+   "gold": {
+    "drafts": [
+     {
+      "message_id": "rec-03",
+      "body": "The design review starts at 10:00 on Thursday, in Room 2A."
+     }
+    ]
+   }
+  },
+  {
+   "id": "ex-04",
+   "instruction": "Label the incident and the rollback as action.",
+   "calls": [
+    {
+     "name": "apply_label",
+     "args": {
+      "message_id": "rec-20",
+      "label": "action"
+     }
+    },
+    {
+     "name": "apply_label",
+     "args": {
+      "message_id": "rec-12",
+      "label": "action"
+     }
+    }
+   ],
+   "gold": {
+    "labels": {
+     "rec-20": "action",
+     "rec-12": "action"
+    }
+   }
+  },
+  {
+   "id": "ex-05",
+   "instruction": "Which message is the overdue invoice?",
+   "calls": [
+    {
+     "name": "search_inbox",
+     "args": {
+      "query": "invoice",
+      "max_results": 5
+     }
+    }
+   ],
+   "gold": {
+    "facts": [
+     "rec-01"
+    ]
+   }
+  },
+  {
+   "id": "ex-06",
+   "instruction": "Confirm the venue deposit message and its filing.",
+   "calls": [
+    {
+     "name": "get_record",
+     "args": {
+      "message_id": "rec-08"
+     },
+     "defects": [
+      "args_trailing"
+     ]
+    },
+    {
+     "name": "search_inbox",
+     "args": {
+      "query": "venue",
+      "max_results": 5
+     }
+    }
+   ],
+   "gold": {
+    "facts": [
+     "rec-08"
+    ]
+   }
+  },
+  {
+   "id": "ex-07",
+   "instruction": "File the nightly build failure as fyi.",
+   "calls": [
+    {
+     "name": "apply_label",
+     "args": {
+      "message_id": "rec-11",
+      "label": "fyi"
+     },
+     "defects": [
+      "enum_drift"
+     ]
+    }
+   ],
+   "gold": {
+    "labels": {
+     "rec-11": "fyi"
+    }
+   }
+  },
+  {
+   "id": "ex-08",
+   "instruction": "Reply to Sam about the call move.",
+   "calls": [
+    {
+     "name": "draft_reply",
+     "args": {
+      "message_id": "rec-18",
+      "body": "Friday works -- same time."
+     },
+     "defects": [
+      "unknown_tool"
+     ],
+     "emitted_name": "send_reply",
+     "fallback_tool": "draft_reply"
+    }
+   ],
+   "gold": {
+    "drafts": [
+     {
+      "message_id": "rec-18",
+      "body": "Friday works -- same time."
+     }
+    ]
+   }
+  },
+  {
+   "id": "ex-09",
+   "instruction": "Check the security review's record, then label it action.",
+   "calls": [
+    {
+     "name": "get_record",
+     "args": {
+      "message_id": "rec-16"
+     },
+     "defects": [
+      "bad_id"
+     ]
+    },
+    {
+     "name": "apply_label",
+     "args": {
+      "message_id": "rec-16",
+      "label": "action"
+     }
+    }
+   ],
+   "gold": {
+    "labels": {
+     "rec-16": "action"
+    }
+   }
+  },
+  {
+   "id": "ex-10",
+   "instruction": "File the hosting receipt as archive (the second call repeats the first).",
+   "calls": [
+    {
+     "name": "apply_label",
+     "args": {
+      "message_id": "rec-19",
+      "label": "archive"
+     }
+    },
+    {
+     "name": "apply_label",
+     "args": {
+      "message_id": "rec-19",
+      "label": "archive"
+     },
+     "defects": [
+      "extra_arg"
+     ]
+    }
+   ],
+   "gold": {
+    "labels": {
+     "rec-19": "archive"
+    }
+   }
+  },
+  {
+   "id": "ex-11",
+   "instruction": "Draft the vendor-review reply to Legal.",
+   "calls": [
+    {
+     "name": "draft_reply",
+     "args": {
+      "message_id": "rec-10",
+      "body": "Comments on the vendor review are attached: the two conditions work for us, and the countersign date of November 18 holds on our side."
+     },
+     "defects": [
+      "body_over"
+     ]
+    }
+   ],
+   "gold": {
+    "drafts": [
+     {
+      "message_id": "rec-10",
+      "body": "Comments on the vendor review are attached: the two conditions work for us, and the countersign date of November 18 holds on our side."
+     }
+    ]
+   }
+  },
+  {
+   "id": "ex-12",
+   "instruction": "File Legal's vendor-review conclusion.",
+   "calls": [
+    {
+     "name": "apply_label",
+     "args": {
+      "message_id": "rec-17",
+      "label": "archive"
+     }
+    }
+   ],
+   "judgement": "as task-13: 'concluded' is not archive; the record's label is fyi",
+   "gold": {
+    "labels": {
+     "rec-17": "fyi"
+    }
+   }
+  },
+  {
+   "id": "ex-13",
+   "instruction": "Find the retention request, then label it reply.",
+   "calls": [
+    {
+     "name": "search_inbox",
+     "args": {
+      "query": "retention",
+      "max_results": 5
+     },
+     "defects": [
+      "type_string_int"
+     ]
+    },
+    {
+     "name": "apply_label",
+     "args": {
+      "message_id": "rec-14",
+      "label": "reply"
+     }
+    }
+   ],
+   "gold": {
+    "labels": {
+     "rec-14": "reply"
+    }
+   }
+  },
+  {
+   "id": "ex-14",
+   "instruction": "Label the travel request action and the metrics snapshot fyi.",
+   "calls": [
+    {
+     "name": "apply_label",
+     "args": {
+      "message_id": "rec-23",
+      "label": "action"
+     }
+    },
+    {
+     "name": "apply_label",
+     "args": {
+      "message_id": "rec-24",
+      "label": "fyi"
+     }
+    }
+   ],
+   "gold": {
+    "labels": {
+     "rec-23": "action",
+     "rec-24": "fyi"
+    }
+   }
+  },
+  {
+   "id": "ex-15",
+   "instruction": "Draft the venue-deposit approval.",
+   "calls": [
+    {
+     "name": "draft_reply",
+     "args": {
+      "message_id": "rec-08",
+      "body": "Approved -- please proceed with the venue deposit."
+     }
+    }
+   ],
+   "gold": {
+    "drafts": [
+     {
+      "message_id": "rec-08",
+      "body": "Approved -- please proceed with the venue deposit."
+     }
+    ]
+   }
+  },
+  {
+   "id": "ex-16",
+   "instruction": "Label the launch checklist as action.",
+   "calls": [
+    {
+     "name": "apply_label",
+     "args": {
+      "message_id": "rec-04",
+      "label": "action"
+     },
+     "defects": [
+      "missing_arg"
+     ],
+     "missing_key": "label"
+    }
+   ],
+   "gold": {
+    "labels": {
+     "rec-04": "action"
+    }
+   }
+  }
+ ]
+}

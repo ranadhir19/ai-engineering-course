@@ -1,0 +1,15 @@
+Support Digest — Inbox Assistant, First Month
+
+This digest summarises the first month of support questions sent to the inbox assistant and what the team learned from them. The assistant answers extractively from the inbox it can search: a project launch, a budget approval, and a meeting reschedule. Every number below comes from the support log, and the log is the only source used.
+
+Volume. The assistant received 412 questions in the first month. Of those, 356 were answered from a matching email, 41 received the honest no-match answer, and 15 were follow-ups to an earlier answer in the same conversation. The no-match rate is just under ten percent, and it is concentrated in two topics the inbox simply does not cover: password resets and building access. Those questions belong to a different system, and the correct fix is a signpost, not a bigger inbox.
+
+The launch questions. Questions about the Project Aurora launch date were the single largest group, at 138 of 412. Most asked for the date; a noticeable minority asked whether the date had moved, which the inbox cannot answer beyond the announcement it already holds. When the launch rehearsal notes are published, the assistant's answers improve without any code changing, because the inbox it searches will hold a better email. That is the quiet lesson of the first month: for an extractive assistant, content is capability.
+
+The budget questions. Eighty-nine questions asked about the approved budget of 48000 dollars, mostly variations on what the money covers and where receipts go. The budget email answers both, and the answer rate on this topic was the highest of any group. One question in this group failed oddly: it asked about a budget for a different project, and the assistant matched the word budget and answered with this project's number. Keyword overlap cannot tell two budgets apart, and the team has noted it as a known limitation, in writing, where users of the log can see it.
+
+The meeting questions. Sixty-three questions asked about the design review meeting, and nearly all of them were asked after the reschedule was announced. The assistant answered with the new time, Thursday at 2 pm in Room 4B, because the reschedule email is the one that matches. Nobody asked about the old time after the first week, which suggests the announcement reached the people who needed it.
+
+Follow-ups. Fifteen questions were follow-ups: they referred to an earlier answer — "and what about the rehearsal?" — and the assistant, which treats every question as a new search, answered some of them from the wrong email. A follow-up is a conversation, and the assistant does not yet keep one. This digest records that as the first month's clearest product finding: the next capability the assistant needs is a memory of what it has already said, held inside a window that is not infinite.
+
+Coverage note. The digest covers questions the assistant received. It cannot cover questions people decided not to ask, and it does not try.

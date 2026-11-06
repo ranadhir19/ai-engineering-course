@@ -1,0 +1,17 @@
+Vendor Review — Data Pipeline Contract Renewal
+
+This review covers the renewal of the data pipeline contract that moves inbox exports to the analytics store every night. The current contract expires on December 31, 2026. The renewal has been under review for six weeks, and this document records the state of the review, the open questions, and the dates that matter.
+
+Background. The pipeline moves one export per night, and the export has failed twice in the last quarter. Both failures were detected by the morning report, not by the pipeline itself, which is the first finding of this review: the contract pays for movement, and the monitoring that makes movement trustworthy is ours, not the vendor's. Any renewal should price that honestly.
+
+Commercial state. The vendor proposes a three-year term with a four percent annual increase and a ninety-day exit clause. Finance has approved a budget envelope for the renewal, and the approved envelope covers the proposed price for the first two years. The third year exceeds the envelope if the increase compounds as drafted, and that gap is an open item for the negotiation, not a surprise for next year.
+
+Schedule risk. The review was scheduled to close on November 6. It did not. The vendor's security questionnaire came back with two unanswered sections, and our reviewers cannot sign until those sections are complete. If the review slips by two weeks, the signature lands after the Project Aurora launch, and the migration that the renewal enables moves behind the launch. The migration is not on the launch critical path, but the launch announcement refers to it, so a slip is visible outside the building even though it changes nothing inside it.
+
+Technical findings. First, the export format is a nightly full dump, and a full dump grows with the inbox; an incremental export would cut the transfer window by an order of magnitude, and the vendor supports it at no extra charge, but only from the renewed contract. Second, the vendor's retry behaviour on a failed transfer is a single retry after one hour, which is how a one-hour fault became a missing morning report. Third, the contract's service levels measure the vendor's response to a ticket, not the arrival of the data, and the renewal draft keeps that definition. Each of these is fixable in drafting; none of them fixes itself.
+
+Open questions. Who owns the monitoring gap if the renewal keeps the current service definition — the vendor, or the team that reads the morning report? Does the three-year term still make sense if the export format changes in year one? What does the exit clause actually cost if it is exercised in the first year, in money and in migration effort? The reviewers want these answered in the contract, not in a side letter.
+
+Recommendation. Close the security questionnaire this week, negotiate the third-year increase against the incremental-export commitment, and sign before the end of November. If the signature slips past the launch, publish the migration date only when the contract is signed. A date announced before a signature is a promise made with somebody else's pen.
+
+Prepared by the vendor management office. Distribution: project leads, finance, and the launch coordinator, because the schedule risk touches the launch announcement.
