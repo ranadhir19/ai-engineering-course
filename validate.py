@@ -285,7 +285,8 @@ def check_harness_110():
         print(result.stdout)
         print(result.stderr, file=sys.stderr)
     starter = subprocess.run(
-        [sys.executable, harness, "--gate", "admit.py"],
+        [sys.executable, harness, "--gate",
+         os.path.join(ex, "admit.py")],
         capture_output=True,
         text=True,
         timeout=300,
