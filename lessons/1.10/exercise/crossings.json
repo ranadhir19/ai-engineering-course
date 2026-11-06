@@ -1,0 +1,274 @@
+{
+ "about": "Exercise 1.10: sixteen crossings arrive as data -- requests, tool results, records at rest. There is no sender to correct them and no model to re-ask: the gate must give every crossing a named disposition (admit / repair / quarantine / reject), admit nothing invalid, lose nothing legitimate, and hold what only a decision can settle. Golds written before any gate ran; x-15 is formally perfect and wrong (the ceiling, planted).",
+ "crossings": [
+  {
+   "id": "x-01",
+   "surface": "request",
+   "intended": {
+    "text": "File the launch checklist message as action.",
+    "requester": "ranadhir",
+    "channel": "ui"
+   },
+   "wild": {
+    "text": "File the launch checklist message as action.",
+    "requester": "ranadhir",
+    "channel": "ui"
+   },
+   "defects": [],
+   "gold": {
+    "disposition": "admit"
+   }
+  },
+  {
+   "id": "x-02",
+   "surface": "request",
+   "intended": {
+    "text": "Draft the chase for invoice 114.",
+    "requester": "ranadhir",
+    "channel": "ui"
+   },
+   "wild": {
+    "text": "\r\nDraft the chase for invoice 114.\r\n",
+    "requester": "ranadhir",
+    "channel": "ui"
+   },
+   "defects": [
+    "whitespace"
+   ],
+   "gold": {
+    "disposition": "repair"
+   }
+  },
+  {
+   "id": "x-03",
+   "surface": "request",
+   "intended": null,
+   "wild": {
+    "text": "Summarise the whole quarter thread by thread and attach every receipt mentioned anywhere in it. Summarise the whole quarter thread by thread and attach every receipt mentioned anywhere in it. Summarise the whole quarter thread by thread and attach every receipt mentioned anywhere in it. Summarise the whole quarter thread by thread and attach every receipt mentioned anywhere in it. Summarise the whole quarter thread by thread and attach every receipt mentioned anywhere in it. Summarise the whole quarter thread by thread and attach every receipt mentioned anywhere in it. Summarise the whole quarter thread by thread and attach every receipt mentioned anywhere in it. Summarise the whole quarter thread by thread and attach every receipt mentioned anywhere in it. Summarise the whole quarter thread by thread and attach every receipt mentioned anywhere in it. Summarise the whole quarter thread by thread and attach every receipt mentioned anywhere in it. Summarise the whole quarter thread by thread and attach every receipt mentioned anywhere in it. Summarise the whole quarter thread by thread and attach every receipt mentioned anywhere in it. Summarise the whole quarter thread by thread and attach every receipt mentioned anywhere in it. Summarise the whole quarter thread by thread and attach every receipt mentioned anywhere in it. Summarise the whole quarter thread by thread and attach every receipt mentioned anywhere in it. Summarise the whole quarter thread by thread and attach every receipt mentioned anywhere in it. Summarise the whole quarter thread by thread and attach every receipt mentioned anywhere in it. Summarise the whole quarter thread by thread and attach every receipt mentioned anywhere in it. Summarise the whole quarter thread by thread and attach every receipt mentioned anywhere in it. Summarise the whole quarter thread by thread and attach every receipt mentioned anywhere in it. Summarise the whole quarter thread by thread and attach every receipt mentioned anywhere in it. Summarise the whole quarter thread by thread and attach every receipt mentioned anywhere in it. Summarise the whole quarter thread by thread and attach every receipt mentioned anywhere in it. Summarise the whole quarter thread by thread and attach every receipt mentioned anywhere in it.",
+    "requester": "ranadhir",
+    "channel": "email"
+   },
+   "defects": [
+    "over_cap"
+   ],
+   "gold": {
+    "disposition": "quarantine"
+   }
+  },
+  {
+   "id": "x-04",
+   "surface": "request",
+   "intended": null,
+   "wild": {
+    "text": "Label the digest as fyi.",
+    "requester": "ranadhir",
+    "channel": "voice"
+   },
+   "defects": [
+    "unknown_channel"
+   ],
+   "gold": {
+    "disposition": "reject"
+   }
+  },
+  {
+   "id": "x-05",
+   "surface": "result",
+   "tool": "search_inbox",
+   "intended": {
+    "hits": [
+     {
+      "id": "rec-09",
+      "snippet": "From: facilities@example.com \u2014 Notice: the design review moves to Room 2"
+     }
+    ],
+    "total": 1
+   },
+   "wild": "{\"hits\": [{\"id\": \"rec-09\", \"snippet\": \"From: facilities@example.com \\u2014 Notice: the design review moves to Room 2\"}], \"total\": 1}",
+   "defects": [],
+   "gold": {
+    "disposition": "admit"
+   }
+  },
+  {
+   "id": "x-06",
+   "surface": "result",
+   "tool": "get_record",
+   "intended": {
+    "message_id": "rec-12",
+    "record": {
+     "label": "action",
+     "priority": "high",
+     "summary": "Roll back the flags change before the freeze.",
+     "reply_needed": true,
+     "due": "2026-11-09"
+    }
+   },
+   "wild": "{\"message_id\": \"rec-12\", \"record\": {\"label\": \"action\", \"priority\": \"high\", \"summary\": \"Roll back the flags change before the freeze.\", \"reply_needed\": true, \"due\": \"2026-11-09\"}, \"cached\": true}",
+   "defects": [
+    "extra_field"
+   ],
+   "gold": {
+    "disposition": "repair"
+   }
+  },
+  {
+   "id": "x-07",
+   "surface": "result",
+   "tool": "draft_reply",
+   "intended": {
+    "draft_id": "draft-03",
+    "message_id": "rec-18",
+    "state": "draft created (not sent)"
+   },
+   "wild": "{\"draft_id\": \"draft-03\", \"message_id\": \"",
+   "defects": [
+    "unparseable"
+   ],
+   "gold": {
+    "disposition": "reject"
+   }
+  },
+  {
+   "id": "x-08",
+   "surface": "result",
+   "tool": "search_inbox",
+   "intended": null,
+   "wild": "{\"draft_id\": \"draft-09\", \"message_id\": \"rec-03\", \"state\": \"draft created (not sent)\"}",
+   "defects": [
+    "wrong_contract"
+   ],
+   "gold": {
+    "disposition": "quarantine"
+   }
+  },
+  {
+   "id": "x-09",
+   "surface": "record",
+   "stored_id": "rec-04",
+   "intended": {
+    "label": "action",
+    "priority": "high",
+    "summary": "Sign off the launch checklist before the November 21 launch.",
+    "reply_needed": true,
+    "due": "2026-11-20"
+   },
+   "wild": "{\"id\": \"rec-04\", \"v\": \"1.0.0\", \"record\": {\"label\": \"action\", \"priority\": \"high\", \"summary\": \"Sign off the launch checklist before the November 21 launch.\", \"reply_needed\": true, \"due\": \"2026-11-20\"}}",
+   "defects": [],
+   "gold": {
+    "disposition": "admit"
+   }
+  },
+  {
+   "id": "x-10",
+   "surface": "record",
+   "stored_id": "rec-06",
+   "intended": {
+    "label": "fyi",
+    "priority": "normal",
+    "summary": "Support digest: three tickets closed this week.",
+    "reply_needed": false,
+    "due": null
+   },
+   "wild": "{\"id\": \"rec-06\", \"v\": \"0.9.0\", \"record\": {\"label\": \"fyi\", \"priority\": \"normal\", \"summary\": \"Support digest: three tickets closed this week.\", \"reply_needed\": \"no\", \"due\": null}}",
+   "defects": [
+    "version_drift"
+   ],
+   "gold": {
+    "disposition": "repair"
+   }
+  },
+  {
+   "id": "x-11",
+   "surface": "record",
+   "stored_id": "rec-15",
+   "intended": {
+    "label": "archive",
+    "priority": "low",
+    "summary": "Auto-notice: the data-plan contract renews next month.",
+    "reply_needed": false,
+    "due": null
+   },
+   "wild": "{\"id\": \"rec-15\", \"v\": \"0.9.0\", \"record\": {\"label\": \"ARCHIVE\", \"priority\": \"low\", \"summary\": \"Auto-notice: the data-plan contract renews next month.\", \"reply_needed\": false, \"due\": \"none\"}}",
+   "defects": [
+    "version_drift"
+   ],
+   "gold": {
+    "disposition": "repair"
+   }
+  },
+  {
+   "id": "x-12",
+   "surface": "record",
+   "stored_id": "rec-24",
+   "intended": null,
+   "wild": "{\"id\": \"rec-24\", \"v\": \"1.0.0\", \"record\": {\"label\": \"fyi\", \"priority\": \"urgent\", \"summary\": \"Weekly metrics snapshot: signups up four per cent.\", \"reply_needed\": false, \"due\": null}}",
+   "defects": [
+    "value_never_allowed"
+   ],
+   "gold": {
+    "disposition": "quarantine"
+   }
+  },
+  {
+   "id": "x-13",
+   "surface": "record",
+   "stored_id": "rec-13",
+   "intended": null,
+   "wild": "{\"id\": \"rec-13\", \"v\": \"1.0.0\", \"record\": {\"label\": \"fyi\", \"priority\": \"low\", \"summary\": \"Office closes early on Friday for building maintenance; the notice covers the Friday closure, the badge reader downtime, the rescheduled cleaning, and the parking arrangements for the day.\", \"reply_needed\": false, \"due\": null}}",
+   "defects": [
+    "over_cap"
+   ],
+   "gold": {
+    "disposition": "quarantine"
+   }
+  },
+  {
+   "id": "x-14",
+   "surface": "record",
+   "stored_id": "rec-21",
+   "intended": null,
+   "wild": "{\"id\": \"rec-21\", \"v\": \"1.0.0\", \"record\": {\"label\": \"reply\", \"pri",
+   "defects": [
+    "unparseable"
+   ],
+   "gold": {
+    "disposition": "reject"
+   }
+  },
+  {
+   "id": "x-15",
+   "surface": "record",
+   "stored_id": "rec-17",
+   "intended": {
+    "label": "fyi",
+    "priority": "normal",
+    "summary": "Vendor review accepted with two conditions; object by November 19.",
+    "reply_needed": false,
+    "due": "2026-11-19"
+   },
+   "wild": "{\"id\": \"rec-17\", \"v\": \"1.0.0\", \"record\": {\"label\": \"archive\", \"priority\": \"normal\", \"summary\": \"Vendor review accepted with two conditions; object by November 19.\", \"reply_needed\": false, \"due\": \"2026-11-19\"}}",
+   "defects": [
+    "valid_but_wrong"
+   ],
+   "gold": {
+    "disposition": "admit"
+   }
+  },
+  {
+   "id": "x-16",
+   "surface": "request",
+   "intended": null,
+   "wild": {
+    "text": "What priority is the incident filed at?",
+    "channel": "api"
+   },
+   "defects": [
+    "missing_field"
+   ],
+   "gold": {
+    "disposition": "reject"
+   }
+  }
+ ]
+}

@@ -1,0 +1,662 @@
+{
+ "about": "The 24 tasks of Lesson 1.09: user instructions over the Assistant's own inbox (the 1.08 case set), each with the model's intended plan (turns of calls), the calls' printed emission defects, and the gold end state -- labels exactly, drafts by message and key phrase, facts that must surface in the tool results. Three tasks (13, 18, 22) carry planted judgement errors in the intended plan; their gold is what the instruction actually asked for.",
+ "tasks": [
+  {
+   "id": "task-01",
+   "instruction": "File the overdue invoice message as action.",
+   "turns": [
+    [
+     {
+      "name": "apply_label",
+      "args": {
+       "message_id": "rec-01",
+       "label": "action"
+      }
+     }
+    ]
+   ],
+   "gold": {
+    "labels": {
+     "rec-01": "action"
+    }
+   }
+  },
+  {
+   "id": "task-02",
+   "instruction": "Find Priya's message about the vendor form and label it action.",
+   "turns": [
+    [
+     {
+      "name": "search_inbox",
+      "args": {
+       "query": "vendor form",
+       "max_results": 5
+      },
+      "defects": [
+       "type_string_int"
+      ]
+     }
+    ],
+    [
+     {
+      "name": "apply_label",
+      "args": {
+       "message_id": "rec-07",
+       "label": "action"
+      }
+     }
+    ]
+   ],
+   "gold": {
+    "labels": {
+     "rec-07": "action"
+    },
+    "facts": [
+     "rec-07"
+    ]
+   }
+  },
+  {
+   "id": "task-03",
+   "instruction": "What priority is the venue deposit filed at, and when is it due?",
+   "turns": [
+    [
+     {
+      "name": "search_inbox",
+      "args": {
+       "query": "venue deposit",
+       "max_results": 5
+      }
+     }
+    ],
+    [
+     {
+      "name": "get_record",
+      "args": {
+       "message_id": "rec-08"
+      }
+     }
+    ]
+   ],
+   "gold": {
+    "facts": [
+     "high",
+     "2026-11-12"
+    ]
+   }
+  },
+  {
+   "id": "task-04",
+   "instruction": "Draft a reply to the incident alert: say we are on the bridge and payments are being investigated.",
+   "turns": [
+    [
+     {
+      "name": "draft_reply",
+      "args": {
+       "message_id": "rec-20",
+       "body": "We are on the incident bridge now and payments are being investigated; updates every thirty minutes."
+      },
+      "defects": [
+       "args_trailing"
+      ]
+     }
+    ]
+   ],
+   "gold": {
+    "drafts": [
+     {
+      "message_id": "rec-20",
+      "body_key": "incident bridge"
+     }
+    ]
+   }
+  },
+  {
+   "id": "task-05",
+   "instruction": "Label the production incident as action and the product digest as archive.",
+   "turns": [
+    [
+     {
+      "name": "apply_label",
+      "args": {
+       "message_id": "rec-20",
+       "label": "action"
+      }
+     },
+     {
+      "name": "apply_label",
+      "args": {
+       "message_id": "rec-02",
+       "label": "archive"
+      }
+     }
+    ]
+   ],
+   "gold": {
+    "labels": {
+     "rec-20": "action",
+     "rec-02": "archive"
+    }
+   }
+  },
+  {
+   "id": "task-06",
+   "instruction": "Reply to Sam about moving the call.",
+   "turns": [
+    [
+     {
+      "name": "draft_reply",
+      "args": {
+       "message_id": "rec-18",
+       "body": "Friday works for me -- same time. See you then."
+      },
+      "defects": [
+       "unknown_tool"
+      ],
+      "emitted_name": "send_reply",
+      "fallback_tool": "draft_reply"
+     }
+    ]
+   ],
+   "gold": {
+    "drafts": [
+     {
+      "message_id": "rec-18",
+      "body_key": "Friday"
+     }
+    ]
+   }
+  },
+  {
+   "id": "task-07",
+   "instruction": "Label the rollback request from release as action.",
+   "turns": [
+    [
+     {
+      "name": "apply_label",
+      "args": {
+       "message_id": "rec-12",
+       "label": "action"
+      },
+      "defects": [
+       "enum_drift"
+      ]
+     }
+    ]
+   ],
+   "gold": {
+    "labels": {
+     "rec-12": "action"
+    }
+   }
+  },
+  {
+   "id": "task-08",
+   "instruction": "Search for the retention numbers requests and tell me which messages ask for them.",
+   "turns": [
+    [
+     {
+      "name": "search_inbox",
+      "args": {
+       "query": "retention",
+       "max_results": 5
+      },
+      "defects": [
+       "args_single_quotes"
+      ]
+     }
+    ]
+   ],
+   "gold": {
+    "facts": [
+     "rec-14",
+     "rec-21"
+    ]
+   }
+  },
+  {
+   "id": "task-09",
+   "instruction": "Get the record for the message about the security review and tell me its due date.",
+   "turns": [
+    [
+     {
+      "name": "get_record",
+      "args": {
+       "message_id": "rec-16"
+      },
+      "defects": [
+       "bad_id"
+      ],
+      "recover_query": "security review"
+     }
+    ]
+   ],
+   "gold": {
+    "facts": [
+     "2026-11-16"
+    ]
+   }
+  },
+  {
+   "id": "task-10",
+   "instruction": "Draft the reply to Legal about the vendor review comments.",
+   "turns": [
+    [
+     {
+      "name": "draft_reply",
+      "args": {
+       "message_id": "rec-10",
+       "body": "Comments on the vendor review are attached: the two conditions work for us, and the countersign date of November 18 holds on our side."
+      },
+      "defects": [
+       "body_over"
+      ]
+     }
+    ]
+   ],
+   "gold": {
+    "drafts": [
+     {
+      "message_id": "rec-10",
+      "body_key": "vendor review"
+     }
+    ]
+   }
+  },
+  {
+   "id": "task-11",
+   "instruction": "Label the launch checklist message as action; it needs sign-off.",
+   "turns": [
+    [
+     {
+      "name": "apply_label",
+      "args": {
+       "message_id": "rec-04",
+       "label": "action"
+      },
+      "defects": [
+       "missing_arg"
+      ],
+      "missing_key": "label"
+     }
+    ]
+   ],
+   "gold": {
+    "labels": {
+     "rec-04": "action"
+    }
+   }
+  },
+  {
+   "id": "task-12",
+   "instruction": "Find the travel request and label it action, and file the metrics snapshot as fyi.",
+   "turns": [
+    [
+     {
+      "name": "search_inbox",
+      "args": {
+       "query": "travel request",
+       "max_results": 5
+      }
+     }
+    ],
+    [
+     {
+      "name": "apply_label",
+      "args": {
+       "message_id": "rec-23",
+       "label": "action"
+      }
+     },
+     {
+      "name": "apply_label",
+      "args": {
+       "message_id": "rec-24",
+       "label": "fyi"
+      },
+      "defects": [
+       "extra_arg"
+      ]
+     }
+    ]
+   ],
+   "gold": {
+    "labels": {
+     "rec-23": "action",
+     "rec-24": "fyi"
+    },
+    "facts": [
+     "rec-23"
+    ]
+   }
+  },
+  {
+   "id": "task-13",
+   "instruction": "The vendor review concluded -- file Legal's conclusion message.",
+   "turns": [
+    [
+     {
+      "name": "apply_label",
+      "args": {
+       "message_id": "rec-17",
+       "label": "archive"
+      }
+     }
+    ]
+   ],
+   "judgement": "the planner reads 'concluded' as archive; the record's label is fyi -- a notice, nothing to file away as done",
+   "gold": {
+    "labels": {
+     "rec-17": "fyi"
+    }
+   }
+  },
+  {
+   "id": "task-14",
+   "instruction": "What label and priority does the invoice message carry?",
+   "turns": [
+    [
+     {
+      "name": "get_record",
+      "args": {
+       "message_id": "rec-01"
+      },
+      "defects": [
+       "args_trailing"
+      ]
+     }
+    ]
+   ],
+   "gold": {
+    "facts": [
+     "action",
+     "high"
+    ]
+   }
+  },
+  {
+   "id": "task-15",
+   "instruction": "Draft a reply to Ana answering the design review question: it starts at 10:00 in Room 2A.",
+   "turns": [
+    [
+     {
+      "name": "draft_reply",
+      "args": {
+       "message_id": "rec-03",
+       "body": "The design review starts at 10:00 on Thursday, in Room 2A -- book away."
+      }
+     }
+    ]
+   ],
+   "gold": {
+    "drafts": [
+     {
+      "message_id": "rec-03",
+      "body_key": "Room 2A"
+     }
+    ]
+   }
+  },
+  {
+   "id": "task-16",
+   "instruction": "Label the nightly build failure as fyi and the office-closure notice as fyi too.",
+   "turns": [
+    [
+     {
+      "name": "apply_label",
+      "args": {
+       "message_id": "rec-11",
+       "label": "fyi"
+      },
+      "defects": [
+       "args_single_quotes"
+      ]
+     },
+     {
+      "name": "apply_label",
+      "args": {
+       "message_id": "rec-13",
+       "label": "fyi"
+      }
+     }
+    ]
+   ],
+   "gold": {
+    "labels": {
+     "rec-11": "fyi",
+     "rec-13": "fyi"
+    }
+   }
+  },
+  {
+   "id": "task-17",
+   "instruction": "Search for anything about Room 2A and list the messages.",
+   "turns": [
+    [
+     {
+      "name": "search_inbox",
+      "args": {
+       "query": "Room 2A",
+       "max_results": 10
+      },
+      "defects": [
+       "type_string_int"
+      ]
+     }
+    ]
+   ],
+   "gold": {
+    "facts": [
+     "rec-09",
+     "rec-23"
+    ]
+   }
+  },
+  {
+   "id": "task-18",
+   "instruction": "Find the travel approval request and label it action.",
+   "turns": [
+    [
+     {
+      "name": "search_inbox",
+      "args": {
+       "query": "approve",
+       "max_results": 5
+      }
+     }
+    ],
+    [
+     {
+      "name": "apply_label",
+      "args": {
+       "message_id": "rec-08",
+       "label": "action"
+      }
+     }
+    ]
+   ],
+   "judgement": "the planner searches 'approve' and labels the first hit -- the venue deposit, not the travel request (rec-23)",
+   "gold": {
+    "labels": {
+     "rec-23": "action"
+    }
+   }
+  },
+  {
+   "id": "task-19",
+   "instruction": "File the data-plan renewal as archive and the hosting receipt as archive.",
+   "turns": [
+    [
+     {
+      "name": "apply_label",
+      "args": {
+       "message_id": "rec-15",
+       "label": "archive"
+      }
+     },
+     {
+      "name": "apply_label",
+      "args": {
+       "message_id": "rec-19",
+       "label": "archive"
+      },
+      "defects": [
+       "args_trailing"
+      ]
+     }
+    ]
+   ],
+   "gold": {
+    "labels": {
+     "rec-15": "archive",
+     "rec-19": "archive"
+    }
+   }
+  },
+  {
+   "id": "task-20",
+   "instruction": "Draft a reply to Finance approving the venue deposit.",
+   "turns": [
+    [
+     {
+      "name": "draft_reply",
+      "args": {
+       "message_id": "rec-08",
+       "body": "Approved -- please proceed with the 48,000-dollar venue deposit before the November 12 hold expires."
+      }
+     }
+    ]
+   ],
+   "gold": {
+    "drafts": [
+     {
+      "message_id": "rec-08",
+      "body_key": "venue deposit"
+     }
+    ]
+   }
+  },
+  {
+   "id": "task-21",
+   "instruction": "What is filed for the onboarding document message?",
+   "turns": [
+    [
+     {
+      "name": "search_inbox",
+      "args": {
+       "query": "onboarding",
+       "max_results": 5
+      }
+     }
+    ],
+    [
+     {
+      "name": "get_record",
+      "args": {
+       "message_id": "rec-22"
+      },
+      "defects": [
+       "extra_arg"
+      ]
+     }
+    ]
+   ],
+   "gold": {
+    "facts": [
+     "rec-22",
+     "fyi"
+    ]
+   }
+  },
+  {
+   "id": "task-22",
+   "instruction": "Draft a reply to Ana's newsletter question with the October retention numbers.",
+   "turns": [
+    [
+     {
+      "name": "draft_reply",
+      "args": {
+       "message_id": "rec-03",
+       "body": "October's retention numbers are the ones quoted in the status memo thread; I will pull the exact table for the newsletter."
+      }
+     }
+    ]
+   ],
+   "judgement": "two messages are from Ana; the planner drafts to the first (the design review), not the newsletter question (rec-21)",
+   "gold": {
+    "drafts": [
+     {
+      "message_id": "rec-21",
+      "body_key": "retention"
+     }
+    ]
+   }
+  },
+  {
+   "id": "task-23",
+   "instruction": "Label Sam's call-move message as reply and the support digest as fyi.",
+   "turns": [
+    [
+     {
+      "name": "apply_label",
+      "args": {
+       "message_id": "rec-18",
+       "label": "reply"
+      }
+     },
+     {
+      "name": "apply_label",
+      "args": {
+       "message_id": "rec-06",
+       "label": "fyi"
+      }
+     }
+    ]
+   ],
+   "gold": {
+    "labels": {
+     "rec-18": "reply",
+     "rec-06": "fyi"
+    }
+   }
+  },
+  {
+   "id": "task-24",
+   "instruction": "Search for the overdue invoice and draft a chase reply to accounts.",
+   "turns": [
+    [
+     {
+      "name": "search_inbox",
+      "args": {
+       "query": "overdue",
+       "max_results": 5
+      }
+     }
+    ],
+    [
+     {
+      "name": "draft_reply",
+      "args": {
+       "message_id": "rec-01",
+       "body": "Chasing invoice 114: it is thirty days overdue and the payment run closes Friday -- please confirm it is in this week's run."
+      },
+      "defects": [
+       "args_trailing"
+      ]
+     }
+    ]
+   ],
+   "gold": {
+    "drafts": [
+     {
+      "message_id": "rec-01",
+      "body_key": "invoice 114"
+     }
+    ],
+    "facts": [
+     "rec-01"
+    ]
+   }
+  }
+ ]
+}

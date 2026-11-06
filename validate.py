@@ -23,7 +23,11 @@ Checks:
      solution extractor (its default target).
  10. The lesson 1.09 tools harness passes against the exercise
      solution dispatcher (its default target).
- 11. Every existing lesson folder has starter/, solution/, exercise/
+ 11. The lesson 1.10 boundary harness passes against the exercise
+     solution gate, fails against the starter gate, and the shipped
+     boundary numbers (dispositions, gold agreement, the 1.09
+     unification) reproduce from the pack's driver.
+ 12. Every existing lesson folder has starter/, solution/, exercise/
      and a README.md.
 
 Prints PASS/FAIL per check and exits non-zero on any failure.
@@ -259,6 +263,62 @@ def check_harness_109():
         print(result.stderr, file=sys.stderr)
 
 
+def check_harness_110():
+    ex = os.path.join(ROOT, "lessons", "1.10", "exercise")
+    harness = os.path.join(ex, "boundary_harness.py")
+    if not os.path.isfile(harness):
+        report(False, "lesson 1.10 boundary harness", "missing: " + harness)
+        return
+    result = subprocess.run(
+        [sys.executable, harness],
+        capture_output=True,
+        text=True,
+        timeout=300,
+    )
+    tail = (result.stdout.strip().splitlines() or [""])[-1]
+    report(
+        result.returncode == 0,
+        "lessons/1.10 exercise boundary_harness (exercise solution gate)",
+        "exit=" + str(result.returncode) + " " + tail,
+    )
+    if result.returncode != 0:
+        print(result.stdout)
+        print(result.stderr, file=sys.stderr)
+    starter = subprocess.run(
+        [sys.executable, harness, "--gate", "admit.py"],
+        capture_output=True,
+        text=True,
+        timeout=300,
+    )
+    report(
+        starter.returncode != 0 and "3 of 3 bars missed" in starter.stdout
+        and "12 invalid" in starter.stdout,
+        "lessons/1.10 starter gate misses all three bars as designed",
+        "exit=" + str(starter.returncode),
+    )
+    driver = os.path.join(ROOT, "lessons", "1.10", "solution",
+                          "run_boundary.py")
+    shipped = subprocess.run(
+        [sys.executable, driver, "boundary", "shipped"],
+        capture_output=True,
+        text=True,
+        timeout=300,
+    )
+    wanted = ["dispositions: admit 11, repair 8, quarantine 6, reject 6",
+              "agreement with the gold dispositions written "
+              "beforehand: 31/31",
+              "21 admit, 14 reject"]
+    missing = [w for w in wanted if w not in shipped.stdout]
+    report(
+        shipped.returncode == 0 and not missing,
+        "lessons/1.10 shipped boundary numbers reproduce",
+        ("missing: " + "; ".join(missing)) if missing else "",
+    )
+    if shipped.returncode != 0 or missing:
+        print(shipped.stdout)
+        print(shipped.stderr, file=sys.stderr)
+
+
 def check_lesson_structure():
     lessons_dir = os.path.join(ROOT, "lessons")
     lesson_folders = []
@@ -295,6 +355,7 @@ def main():
     check_harness_107()
     check_harness_108()
     check_harness_109()
+    check_harness_110()
     check_lesson_structure()
     if FAILURES:
         print("OVERALL: FAIL (" + str(len(FAILURES)) + " check(s) failed)")
