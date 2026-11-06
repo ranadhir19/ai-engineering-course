@@ -110,6 +110,10 @@ def section_trust():
     print("  tasks crashed by an exception: {}".format(s["crashed"]))
     print("  INVALID EXECUTIONS (writes that landed in forms the")
     print("  schema forbids): {}".format(s["invalid_executions"]))
+    for task in TASKS:
+        run, _ = runs[task["id"]]
+        for name, why in run["invalid_detail"]:
+            print("    {} {}: {}".format(task["id"], name, why))
     print("  model calls: {}; batch price on atlas: ${:.6f}".format(
         s["model_calls"], s["price"]))
     print("  nothing here was ever validated, so nothing here was")

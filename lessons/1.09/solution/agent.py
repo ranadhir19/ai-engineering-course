@@ -99,6 +99,7 @@ def _new_run(task, strategy):
     return {"task": task["id"], "strategy": strategy,
             "dispositions": [], "results": [], "model_calls": 0,
             "price": 0.0, "retries": 0, "invalid_executions": 0,
+            "invalid_detail": [],
             "crashed": False, "refused": None, "failed_at": None,
             "executed": 0, "successful": 0}
 
@@ -146,6 +147,9 @@ def run_trust(task, store):
             elif tools.TOOL_SCHEMAS.get(wire["name"], {}).get(
                     "access") == "write":
                 run["invalid_executions"] += 1
+                run["invalid_detail"].append(
+                    (wire["name"],
+                     tools.validate_args(wire["name"], args)[0]))
             run["results"].append(result)
             run["dispositions"].append(
                 {"name": wire["name"], "ok": True, "stage": "execute",
