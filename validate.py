@@ -27,7 +27,12 @@ Checks:
      solution gate, fails against the starter gate, and the shipped
      boundary numbers (dispositions, gold agreement, the 1.09
      unification) reproduce from the pack's driver.
- 12. Every existing lesson folder has starter/, solution/, exercise/
+ 12. The lesson 1.11 security harness passes against the exercise
+     solution policy, misses two bars against the found policy,
+     and the shipped security numbers (breaches 24/11/3 across the
+     three configurations, 14 holds, 30/30 gold agreement) are
+     re-derived by importing the pack's own modules.
+ 13. Every existing lesson folder has starter/, solution/, exercise/
      and a README.md.
 
 Prints PASS/FAIL per check and exits non-zero on any failure.
@@ -320,6 +325,79 @@ def check_harness_110():
         print(shipped.stderr, file=sys.stderr)
 
 
+def check_harness_111():
+    ex = os.path.join(ROOT, "lessons", "1.11", "exercise")
+    harness = os.path.join(ex, "security_harness.py")
+    if not os.path.isfile(harness):
+        report(False, "lesson 1.11 security harness", "missing: " + harness)
+        return
+    result = subprocess.run(
+        [sys.executable, harness],
+        capture_output=True,
+        text=True,
+        timeout=300,
+    )
+    tail = (result.stdout.strip().splitlines() or [""])[-1]
+    report(
+        result.returncode == 0,
+        "lessons/1.11 exercise security_harness (exercise solution policy)",
+        "exit=" + str(result.returncode) + " " + tail,
+    )
+    if result.returncode != 0:
+        print(result.stdout)
+        print(result.stderr, file=sys.stderr)
+    found = subprocess.run(
+        [sys.executable, harness, "--policy",
+         os.path.join(ex, "policy.py")],
+        capture_output=True,
+        text=True,
+        timeout=300,
+    )
+    report(
+        found.returncode != 0 and "2 of 3 bars missed" in found.stdout
+        and "5 executed" in found.stdout,
+        "lessons/1.11 found policy misses two bars as designed",
+        "exit=" + str(found.returncode),
+    )
+    # shipped numbers re-derived from the pack's own modules --
+    # imported from the lesson's absolute path, never typed in
+    # from the narration
+    sol = os.path.join(ROOT, "lessons", "1.11", "solution")
+    code = (
+        "import sys; sys.path.insert(0, " + repr(sol) + ")\n"
+        "import attack_lab, security\n"
+        "eps = attack_lab.episodes()\n"
+        "t = attack_lab.summarise(attack_lab.run_corpus("
+        "security.CONFIGS['trust']))\n"
+        "d = attack_lab.summarise(attack_lab.run_corpus("
+        "security.CONFIGS['delimiters']))\n"
+        "f_out = attack_lab.run_corpus("
+        "security.CONFIGS['security@1.0.0'])\n"
+        "f = attack_lab.summarise(f_out)\n"
+        "agree = sum(1 for o, e in zip(f_out, eps) "
+        "if o['outcome'] == e['gold']['full'])\n"
+        "resid = sorted(o['id'] for o in f_out if o['breach'])\n"
+        "print(t['breaches'], d['breaches'], f['breaches'], "
+        "f['tasks_done'], f['held'], agree, ','.join(resid))\n"
+    )
+    derived = subprocess.run(
+        [sys.executable, "-c", code],
+        capture_output=True,
+        text=True,
+        timeout=300,
+    )
+    want = "24 11 3 16 14 30 atk-22,atk-23,atk-24"
+    report(
+        derived.returncode == 0
+        and derived.stdout.strip() == want,
+        "lessons/1.11 shipped security numbers re-derive "
+        "(breaches 24/11/3, 16 tasks, 14 holds, 30/30 gold, "
+        "residuals atk-22/23/24)",
+        "got: " + derived.stdout.strip()
+        + derived.stderr.strip()[:200],
+    )
+
+
 def check_lesson_structure():
     lessons_dir = os.path.join(ROOT, "lessons")
     lesson_folders = []
@@ -357,6 +435,7 @@ def main():
     check_harness_108()
     check_harness_109()
     check_harness_110()
+    check_harness_111()
     check_lesson_structure()
     if FAILURES:
         print("OVERALL: FAIL (" + str(len(FAILURES)) + " check(s) failed)")

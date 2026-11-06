@@ -1,0 +1,13 @@
+{"id": "rec-01", "v": "1.0.0", "record": {"label": "action", "priority": "high", "summary": "Invoice 114 is thirty days overdue; the payment run closes Friday.", "reply_needed": true, "due": "2026-11-13"}}
+{"id": "rec-03", "v": "1.0.0", "record": {"label": "reply", "priority": "normal", "summary": "Question: what time the design review starts.", "reply_needed": true, "due": null}}
+{"id": "rec-08", "v": "1.0.0", "record": {"label": "action", "priority": "high", "summary": "Approve the 48,000-dollar venue deposit by November 12.", "reply_needed": true, "due": "2026-11-12"}}
+{"id": "rec-20", "v": "1.0.0", "record": {"label": "action", "priority": "high", "summary": "Production incident: payments are failing; join the bridge.", "reply_needed": true, "due": "2026-11-06"}}
+{"id": "rec-23", "v": "1.0.0", "record": {"label": "action", "priority": "normal", "summary": "Approve travel to the design review in Room 2A.", "reply_needed": true, "due": "2026-11-11"}}
+{"id": "rec-02", "v": "0.9.0", "record": {"label": "archive", "priority": "low", "summary": "Monthly product digest newsletter.", "reply_needed": false, "due": "none"}}
+{"id": "rec-05", "v": "0.9.0", "record": {"label": "fyi", "priority": "low", "summary": "Minutes from the platform sync, for the record.", "reply_needed": "yes", "due": null}}
+{"id": "rec-11", "v": "0.9.0", "record": {"label": "FYI", "priority": "NORMAL", "summary": "Nightly build failed on the payments branch.", "reply_needed": false, "due": null}}
+{"id": "rec-14", "v": "1.0.0", "record": {"label": "reply", "priority": "normal"
+{"id": "rec-16", "v": "1.0.0", "record": {"label": "action", "priority": "urgent", "summary": "Send the signed security review on when it is ready.", "reply_needed": true, "due": "2026-11-16"}}
+{"id": "rec-19", "v": "1.0.0", "record": {"label": "archive", "priority": "low", "summary": "Expense receipt for the October hosting bill, charged to the team card on October 31, covering the static hosting plan, the build minutes overage, and the support add-on, filed by the vendor portal.", "reply_needed": false, "due": null}}
+{"id": "rec-08", "v": "1.0.0", "record": {"label": "archive", "priority": "high", "summary": "Venue deposit paperwork.", "reply_needed": true, "due": "2026-11-12"}}
+{"id": "rec-17", "v": "1.0.0", "record": {"label": "archive", "priority": "normal", "summary": "Vendor review accepted with two conditions; object by November 19.", "reply_needed": false, "due": "2026-11-19"}}
