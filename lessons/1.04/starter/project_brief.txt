@@ -1,0 +1,29 @@
+Project Brief: The Inbox Assistant
+Prepared for the Phase 1 build review. Status: approved for build.
+
+1. Purpose
+The Inbox Assistant is a small internal tool that answers questions about a team inbox. A user asks a question in plain language, and the assistant answers from the messages the team has received: launch dates, budget approvals, meeting changes, vendor notices, and the everyday traffic of a working project. The assistant exists because the answers already exist. They are sitting in the inbox, spread across dozens of threads, and finding them by hand costs the team several hours every week.
+
+2. Scope
+The first release reads one shared inbox and answers questions about its contents. It does not send mail, it does not delete mail, and it does not act on anything it reads. Answers are extractive: the assistant quotes the relevant sentences from the message it matched, so a user can always check the answer against the source. Summaries are labelled as summaries. Anything the assistant cannot find is reported as not found; inventing an answer is treated as a defect of the highest severity.
+
+3. Workstreams
+The project has four workstreams. The Platform workstream owns the model client, the provider connections, and the serving layer. The Quality workstream owns the evaluation harness, the failure harness, and the golden test set that every release must pass. The Data workstream owns inbox ingestion, retention rules, and the redaction pass that removes personal data before indexing. The Product workstream owns the question interface, the feedback loop, and the weekly report on which questions the assistant failed to answer. Each workstream has one named lead, and cross-workstream disputes are settled at the Friday build review.
+
+4. Timeline
+The rehearsal is on November 14, 2026. The launch is on Wednesday, November 18, 2026. The support rota starts on launch morning and runs for two weeks. A second release, adding the meeting-notes digest, is planned for early December if the launch review is clean.
+
+5. Budget
+Finance has approved 48000 dollars for the project. The approved budget covers hosting and evaluation, and spending can start immediately. Model usage is expected to be the largest running cost once real traffic arrives, which is why every call is logged with its token usage and its price from the first day of the build, not added later as an afterthought.
+
+6. Risks
+The largest risk is a confident wrong answer, which is why the extractive design and the not-found behaviour are requirements, not preferences. The second risk is cost drift: a small change in how much context each question carries can double the monthly bill without anyone noticing, so the cost log is reviewed weekly against the budget. The third risk is provider dependence. The assistant must be able to move between model providers by configuration alone, because pricing, limits, and terms change faster than release cycles.
+
+7. Measurement
+From the first day of the build, every model call is logged with five fields: the provider, the model, the prompt tokens, the completion tokens, and the elapsed time. The log is the project's memory of what its intelligence costs. Once a week the Platform workstream publishes three numbers from it: the average cost per answered question, the slowest five percent of calls, and the share of calls that ended in a typed error. These numbers are reviewed at the build review alongside the feature list, because a feature that doubles the cost per question is a budget decision disguised as a design decision. The same log drives provider choice: if two providers answer the golden set equally well, the cheaper and faster one carries the traffic, and the log is the evidence either way.
+
+8. Working agreements
+All client code is standard library only until the Phase 1 review, so that every behaviour of the system can be read in our own source. Failures are shown, not hidden: a failed run stays in the record with its receipts, and the fix is explained against the bytes that failed. Configuration, including provider choice, lives outside the code, so that changing a provider is an operations decision and never a code change reviewed under time pressure.
+
+9. Success criteria
+The launch review will check four things: answer accuracy on the golden question set, the not-found rate on questions the inbox cannot answer, cost per answered question against the budget line, and the failure harness passing in full against the shipped client.

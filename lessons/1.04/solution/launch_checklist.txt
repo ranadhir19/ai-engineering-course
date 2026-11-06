@@ -1,0 +1,17 @@
+Project Aurora — Launch Checklist and Risk Register
+
+This checklist governs the launch of Project Aurora on Wednesday, November 18, 2026. Every item has a named owner. An item without an owner does not exist; it is a hope, not a plan. The rehearsal on November 14 is the last point at which a launch risk can be retired cheaply, and every owner confirms their items at the rehearsal or escalates them the same day.
+
+Risk 1 — Rehearsal slippage. The launch rehearsal depends on the staging environment being frozen by November 13. If the freeze slips, the rehearsal compresses into the weekend and the support rota loses its rest day before launch morning. Owner: Priya Nair, release manager. Mitigation: the freeze date is announced to all workstreams today, and any change after November 12 requires Priya's written approval.
+
+Risk 2 — Support rota gaps. The support rota starts on launch morning and runs for fourteen days. Two overnight shifts in the first week are still unfilled, and an unfilled shift is a launch risk because the first seventy-two hours carry the highest question volume. Owner: Marcus Webb, support lead. Mitigation: Marcus publishes the final rota at the rehearsal, and the escalation phone list is printed, not only shared online.
+
+Risk 3 — Rollback readiness. The rollback plan exists but has never been rehearsed end to end. A rollback that has only been read is a document, not a capability. Owner: Dana Osei, infrastructure lead. Mitigation: Dana runs a timed rollback drill during the rehearsal, and the drill result is recorded in this checklist before launch day.
+
+Risk 4 — Vendor dependency. The vendor review for the data pipeline contract is still open, and a two-week slip in that review moves the pipeline migration behind the launch. The launch does not depend on the migration, but the launch announcement mentions it, which makes the dependency real in public even where it is not real in engineering. Owner: Elena Petrova, vendor manager. Mitigation: Elena confirms the announcement wording with the vendor this week, and the announcement names no migration date.
+
+Risk 5 — Question volume. The inbox assistant will face launch questions it has never seen, and its answers are extractive: it can only repeat what the inbox already says. A question with no matching email gets the honest no-match answer, which is correct behaviour and still a support cost. Owner: the inbox assistant team lead. Mitigation: the three launch emails are written to answer the ten most likely questions, and the no-match rate is reviewed every morning of the first week.
+
+Risk 6 — Calendar collisions. The design review meeting was rescheduled to Thursday at 2 pm in Room 4B, which now collides with the launch communications review. Owner: the project coordinator. Mitigation: one of the two meetings moves before the rehearsal, and the decision is announced in the launch channel, not in email alone.
+
+Sign-off. Each owner signs against their risks at the rehearsal. A risk that cannot be mitigated is not hidden; it is carried into launch day in writing, with its owner named, so that the launch decision is made with open eyes.
